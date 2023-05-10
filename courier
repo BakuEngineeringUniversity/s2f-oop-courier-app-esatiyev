@@ -1,0 +1,264 @@
+import java.time.LocalDate
+
+fun main(args: Array<String>) {
+
+    var couriers = ArrayList<Courier>()
+
+    var courier0 = Courier("Aras Express", 1.49f)
+    var courier1 = Courier("USPS", 8.99f)
+    var courier2 = Courier("FedEx", 9.99f)
+    var courier3 = Courier("DHL", 7.49f)
+    var courier4 = Courier("Star Express (Starex)", 3.89f)
+    var courier5 = Courier("Mover MMC", 6.49f)
+    var courier6 = Courier("Limak", 6.49f, )
+
+    couriers.add(courier0)
+    couriers.add(courier1)
+    couriers.add(courier2)
+    couriers.add(courier3)
+    couriers.add(courier4)
+    couriers.add(courier5)
+    couriers.add(courier6)
+    println(couriers[1].getCourierName())
+
+    val package1 = RegularPackage("01", "AliExpress", "esatiyev", 2.7f, 49f)
+    couriers[1].addPackage(package1)
+
+    println("${package1.getTrackingNumber()}")
+    println(couriers[1].getTotalRevenue())
+
+    val package2 = FragilePackage("02", "Amazon", "Elxan", 0.7f, 7f, isFragile = true)
+    couriers[1].addPackage(package2)
+    println(package2.getIsFragile())
+
+    println("${package2.getTrackingNumber()}")
+    package2.setTrackingNumber("002")
+    println("DELIVERY COST WITH TRACKING NUMBER 002:" +
+            " ${couriers[1].calculateDeliveryCost("002")}$")
+
+    println(couriers[1].getTotalRevenue())
+    couriers[1].removePackage(package1)
+    println(couriers[1].getTotalRevenue())
+
+    println(couriers[1].packages[0].getWeight())
+
+    couriers[1].addPackage(package1)
+
+    val package3 = ExpressPackage("03", "Trendyol", "Elton", 2.0f, 6f, "2")
+    println(package3.getDeliveryTime())
+
+    println(package3.getEstimatedDeliveryTime(700))
+
+    package3.trackPackage()
+    package3.deliverPackage()
+    package3.trackPackage()
+
+    println("\nPackage with tracking number 02  delivery information:")
+    package2.trackPackage()
+    package2.updatePackageStep(1)
+    package2.trackPackage()
+    package2.updatePackageStep(2)
+    package2.trackPackage()
+
+    package2.deliverPackage()
+
+    package2.updatePackageStep(3)
+    package2.trackPackage()
+
+    package2.updatePackageStep(4)
+    package2.trackPackage()
+
+   // return 0
+}
+
+
+abstract class Package(
+    trackingNumber: String,
+    sender: String,
+    recipient: String,
+    weight: Float,
+    price: Float,
+    var step:DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
+) {
+     protected var trackingNumber: String? = trackingNumber
+        fun getTrackingNumber(): String? = trackingNumber
+        fun setTrackingNumber(value: String) {
+            trackingNumber = value
+        }
+
+     protected var sender: String = sender
+        fun getSender() = sender
+        fun setSender(value: String) {
+            sender = value
+        }
+
+     protected var recipient: String = recipient
+        fun getRecipient(): String = recipient
+        fun setRecipient(value: String) {
+            recipient = value
+        }
+
+     protected var weight: Float = weight
+        fun getWeight(): Float = weight
+        fun setWeight(value: Float) {
+            if(value <= 0) weight = 1f
+            else weight = value
+        }
+
+    protected var price: Float = price
+        fun  getPrice(): Float = price
+        fun setPrice(value: Float) {
+            if(value <= 0)
+            else price = value
+        }
+
+    fun updatePackageStep(value: Int){
+        val statusValues = DeliveryStatus.values()
+        if (value >= 0 && value < statusValues.size) {
+            this.step = statusValues[value]
+        } else {
+            println("Invalid status number: $value")
+        }
+        this.step = step
+    }
+    fun trackPackage() : Unit = println("Package with tracking number $trackingNumber is currently $step.")
+}
+
+
+enum class DeliveryStatus(status: String, value: Int) {
+    IN_OVERSEAS_WAREHOUSE("The package is at the warehouse. ", 1),
+    IN_TRANSIT("The package is in transit.", 2),
+    OUT_FOR_DELIVERY("The package is out for delivery. ", 3),
+    DELIVERED("The package is delivered.", 4)
+}
+
+
+open class RegularPackage (
+    trackingNumber: String,
+    sender: String,
+    recipient: String,
+    weight: Float,
+    price: Float,
+    step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
+) : Package(trackingNumber, sender, recipient, weight,price, step), PackageDelivery{
+
+    override fun getEstimatedDeliveryTime(distance: Int): String{
+        var averageSpeed: Int = 150
+
+        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
+    }
+
+    override fun deliverPackage() {
+        step = DeliveryStatus.DELIVERED
+        println("Package delivered on ${LocalDate.now().toString()}")
+        println("Rate your regular delivery experience: ")
+    }
+}
+
+
+class FragilePackage(
+    trackingNumber: String,
+    sender: String,
+    recipient: String,
+    weight: Float,
+    price: Float,
+    step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
+    isFragile: Boolean
+) : Package(trackingNumber, sender, recipient, weight, price,  step), PackageDelivery {
+     protected var isFragile: Boolean = true
+        fun getIsFragile(): Boolean = isFragile
+        fun setIsFragile(value: Boolean) {
+            isFragile = value
+        }
+
+    override fun getEstimatedDeliveryTime(distance: Int): String{
+        var averageSpeed: Int = 250
+        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
+    }
+
+    override fun deliverPackage() {
+        step = DeliveryStatus.DELIVERED
+        println("Package delivered on ${LocalDate.now().toString()}")
+        println("Rate your fragile package delivery experience: ")
+    }
+}
+
+
+interface PackageDelivery {
+    fun getEstimatedDeliveryTime(distance: Int): String
+
+    fun deliverPackage()
+}
+
+
+class ExpressPackage(
+    trackingNumber: String,
+    sender: String,
+    recipient: String,
+    weight: Float,
+    price: Float,
+    deliveryTime : String,
+    step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
+) : RegularPackage(trackingNumber, sender, recipient, weight, price, step), PackageDelivery {
+     protected var deliveryTime: String? = deliveryTime
+        fun getDeliveryTime(): String? = deliveryTime
+        fun setDeliveryTime(value: String) {
+            deliveryTime = value
+        }
+
+    override fun getEstimatedDeliveryTime(distance: Int): String{
+        var averageSpeed: Int = 250
+        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
+    }
+
+    override fun deliverPackage() {
+        deliveryTime = LocalDate.now().toString()
+        step = DeliveryStatus.DELIVERED
+        println("Package delivered on $deliveryTime")
+        println("Rate your express delivery experience: ")
+    }
+}
+
+
+class Courier(protected var name: String, protected var pricePerKg: Float) {
+    fun getCourierName(): String = name
+    fun setCourierName(value: String) {
+        name = value
+    }
+
+    fun getPricePerKg(): Float = pricePerKg
+    fun setPricePerKg(value: Float) {
+        if(value < 0) pricePerKg = 10f
+        else pricePerKg = value
+    }
+
+
+    val packages = ArrayList<Package>()
+
+    fun addPackage(packet: Package) {
+        packages.add(packet)
+    }
+
+    fun removePackage(packet: Package) {
+        packages.remove(packet)
+    }
+
+
+    fun getTotalRevenue(): Float {
+        var totalRevenue: Float = 0f
+        for (packet in packages) {
+            totalRevenue += packet.getWeight() * pricePerKg
+        }
+        return String.format("%.2f", totalRevenue).toFloat()
+    }
+
+    fun calculateDeliveryCost(trackingNumber: String): Any {
+        for (row in packages){
+            if(row.getTrackingNumber() == trackingNumber) {
+                return String.format("%.2f",pricePerKg * row.getWeight()).toFloat()
+            }
+        }
+        return "Invalid tracking number!!!"
+    }
+
+}
