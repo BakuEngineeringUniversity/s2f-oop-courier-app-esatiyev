@@ -80,32 +80,32 @@ abstract class Package(
     price: Float,
     var step:DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) {
-     protected var trackingNumber: String? = trackingNumber
+     private var trackingNumber: String? = trackingNumber
         fun getTrackingNumber(): String? = trackingNumber
         fun setTrackingNumber(value: String) {
             trackingNumber = value
         }
 
-     protected var sender: String = sender
+     private var sender: String = sender
         fun getSender() = sender
         fun setSender(value: String) {
             sender = value
         }
 
-     protected var recipient: String = recipient
+     private var recipient: String = recipient
         fun getRecipient(): String = recipient
         fun setRecipient(value: String) {
             recipient = value
         }
 
-     protected var weight: Float = weight
+     private var weight: Float = weight
         fun getWeight(): Float = weight
         fun setWeight(value: Float) {
             if(value <= 0) weight = 1f
             else weight = value
         }
 
-    protected var price: Float = price
+    private var price: Float = price
         fun  getPrice(): Float = price
         fun setPrice(value: Float) {
             if(value <= 0)
@@ -165,7 +165,7 @@ class FragilePackage(
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     isFragile: Boolean
 ) : Package(trackingNumber, sender, recipient, weight, price,  step), PackageDelivery {
-     protected var isFragile: Boolean = true
+     private var isFragile: Boolean = true
         fun getIsFragile(): Boolean = isFragile
         fun setIsFragile(value: Boolean) {
             isFragile = value
@@ -200,7 +200,7 @@ class ExpressPackage(
     deliveryTime : String,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : RegularPackage(trackingNumber, sender, recipient, weight, price, step), PackageDelivery {
-     protected var deliveryTime: String? = deliveryTime
+     private var deliveryTime: String? = deliveryTime
         fun getDeliveryTime(): String? = deliveryTime
         fun setDeliveryTime(value: String) {
             deliveryTime = value
@@ -220,7 +220,7 @@ class ExpressPackage(
 }
 
 
-class Courier(protected var name: String, protected var pricePerKg: Float) {
+class Courier(private var name: String, private var pricePerKg: Float) {
     fun getCourierName(): String = name
     fun setCourierName(value: String) {
         name = value
