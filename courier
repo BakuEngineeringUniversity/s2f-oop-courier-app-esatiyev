@@ -1,7 +1,14 @@
 import java.time.LocalDate
+import kotlin.random.Random
 
 fun main(args: Array<String>) {
+    var recipient = "esatiyev" // bunu siliceksen user sistemmi eleave edenden sonra.Userin adini atacaqsan bura
+    var sender: String
+    var price: Float
+    var weight: Float
+    var trackingNumber: String
 
+/*
     var couriers = ArrayList<Courier>()
 
     var courier0 = Courier("Aras Express", 1.49f)
@@ -19,8 +26,9 @@ fun main(args: Array<String>) {
     couriers.add(courier4)
     couriers.add(courier5)
     couriers.add(courier6)
-    println(couriers[1].getCourierName())
+    println(couriers[1].getCourierName())*/
 
+/*
     val package1 = RegularPackage("01", "AliExpress", "esatiyev", 2.7f, 49f)
     couriers[1].addPackage(package1)
 
@@ -38,7 +46,7 @@ fun main(args: Array<String>) {
 
     println(couriers[1].getTotalRevenue())
     couriers[1].removePackage(package1)
-    println(couriers[1].getTotalRevenue())
+    println("${couriers[1].getTotalRevenue()}$")
 
     println(couriers[1].packages[0].getWeight())
 
@@ -55,7 +63,7 @@ fun main(args: Array<String>) {
 
     println("\nPackage with tracking number 02  delivery information:")
     package2.trackPackage()
-    package2.updatePackageStep(1)
+    package2.updatePackageStep(DeliveryStatus.DELIVERED)
     package2.trackPackage()
     package2.updatePackageStep(2)
     package2.trackPackage()
@@ -66,11 +74,109 @@ fun main(args: Array<String>) {
     package2.trackPackage()
 
     package2.updatePackageStep(4)
-    package2.trackPackage()
+    package2.trackPackage()*/
 
-   // return 0
+    var sizeOfPackageType = 3
+    var packages = ArrayList<Package>()
+    var couriers = ArrayList<Courier>()
+    var courierName: String
+    while(true){
+        println("1: Create new package")
+        println("2: Create a new courier")
+        //diger caseler
+        println("Please select the subject of your request: ")
+
+       subjectrequest@when(readln().toInt()){
+            // Create a new package
+            1 -> {
+                println("Write your specific package name: ")
+                val packageName: String = readln()
+                println("Choose your package type")
+                println("1: Regular Package")
+                println("2: Express Package")
+                println("3: Fragile Package")
+                var packageType: Int
+                do{
+                    packageType = readln().toInt()
+                    if (packageType !in (0..sizeOfPackageType)) println("Invalid package type!!! Please enter valid type: ")
+                } while(packageType !in (0..sizeOfPackageType))
+
+
+                //   var recipient = "esatiyev" // bunu siliceksen user sistemmi eleave edenden sonra.Userin adini atacaqsan bura
+                println("Write sender name: ")
+                sender = readln()
+                println("Write price of your product: ")
+                price = readln().toFloat()
+                weight = calculateWeight()
+                trackingNumber = setTrackingNumber()
+
+                when(packageType){
+                    // Regular Package
+                    1 -> {
+                        packages.add(RegularPackage(trackingNumber, sender, recipient, weight, price))
+                        println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
+                    }
+                    // Express Package
+                    2 -> {
+                        packages.add(ExpressPackage(trackingNumber, sender, recipient, weight, price))
+                        println("Express Package is added successfully. You can track it with tracking number: $trackingNumber")
+                    }
+                    // Fragile Package
+                    3 -> {
+                        var isFragile: Boolean
+                        do{
+                            println("Is package fragile? (Y/n)")
+                            var x: String = readln()
+                            isFragile = x == "Y"
+                        } while(x != "Y" && x != "n")
+                        packages.add(FragilePackage(trackingNumber, sender, recipient, weight, price, isFragile))
+                        println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
+                    }
+                    else -> println("Invalid package type!!!")
+                }
+
+            }
+
+            // Create a new courier in couriers ArrayList
+            2 -> {
+                var breakSubjectRequest: Boolean = false // bunu labeled breakle ede bilsen sil !!!
+                println("Enter the courier name: ")
+                courierName = readln()
+
+                // check that this courier with this name has already exist or not
+                for(row: Courier in couriers){
+                    if(row.getCourierName() == courierName){
+                        println("This courier has already exist!!!")
+                        breakSubjectRequest = true
+                        //conti@subjectrequest
+                    }
+                }
+                if(breakSubjectRequest) continue
+
+                println("Enter delivery price per kg: ")
+                var pricePerKg: Float
+                do{
+                    pricePerKg = readln().toFloat()
+                    if (pricePerKg <= 0f) println("Delivery price must be more than 0!!! Please enter valid price: ")
+                } while(pricePerKg <= 0f)
+
+                couriers.add(Courier(courierName, pricePerKg))
+                println("Courier is added successfully. You can add package to this courier. Courier name: $courierName")
+            }
+
+            else -> println("\nelse\n")
+        }
+        println("\nPROCESS ENDED\n")
+    }
 }
 
+fun calculateWeight(): Float {
+    val rangeStart = 0.1f
+    val rangeStop = 101f
+    return String.format("%.3f", Random.nextFloat() * (rangeStop - rangeStart) + rangeStart).toFloat()
+}
+
+fun setTrackingNumber(): String = Random.nextInt(1000, 10000).toString()
 
 abstract class Package(
     trackingNumber: String,
@@ -101,15 +207,15 @@ abstract class Package(
      private var weight: Float = weight
         fun getWeight(): Float = weight
         fun setWeight(value: Float) {
-            if(value <= 0) weight = 1f
-            else weight = value
+            weight = if(value <= 0) 1f
+            else value
         }
 
     private var price: Float = price
         fun  getPrice(): Float = price
         fun setPrice(value: Float) {
-            if(value <= 0)
-            else price = value
+            price = if(value <= 0) 0f
+            else value
         }
 
     fun updatePackageStep(value: Int){
@@ -119,7 +225,7 @@ abstract class Package(
         } else {
             println("Invalid status number: $value")
         }
-        this.step = step
+     //   this.step = step
     }
     fun trackPackage() : Unit = println("Package with tracking number $trackingNumber is currently $step.")
 }
@@ -162,10 +268,10 @@ class FragilePackage(
     recipient: String,
     weight: Float,
     price: Float,
-    step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
-    isFragile: Boolean
+    isFragile: Boolean,
+    step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : Package(trackingNumber, sender, recipient, weight, price,  step), PackageDelivery {
-     private var isFragile: Boolean = true
+     protected var isFragile = isFragile
         fun getIsFragile(): Boolean = isFragile
         fun setIsFragile(value: Boolean) {
             isFragile = value
@@ -197,10 +303,9 @@ class ExpressPackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryTime : String,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : RegularPackage(trackingNumber, sender, recipient, weight, price, step), PackageDelivery {
-     private var deliveryTime: String? = deliveryTime
+     private var deliveryTime: String? = null
         fun getDeliveryTime(): String? = deliveryTime
         fun setDeliveryTime(value: String) {
             deliveryTime = value
@@ -233,7 +338,7 @@ class Courier(private var name: String, private var pricePerKg: Float) {
     }
 
 
-    val packages = ArrayList<Package>()
+    var packages = ArrayList<Package>()
 
     fun addPackage(packet: Package) {
         packages.add(packet)
