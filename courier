@@ -82,7 +82,8 @@ fun main(args: Array<String>) {
     var courierName: String
     while(true){
         println("1: Create new package")
-        println("2: Create a new courier")
+        println("2: Add package to specific courier")
+        println("3: Create a new courier")
         //diger caseler
         println("Please select the subject of your request: ")
 
@@ -136,9 +137,42 @@ fun main(args: Array<String>) {
                 }
 
             }
+            // Add package to specific courier
+            2-> {
+                var breakSubjectRequest = true
+                var courierNumber: Int
+                var packageNumber = 0
+                var i = 0
+                println("Which package do you want to add?\nEnter its tracking number: ")
+                trackingNumber = readln()
 
+                // check that tracking number is valid or not
+                for (row in packages) {
+                    if(row.getTrackingNumber() == trackingNumber){
+                        breakSubjectRequest = false
+                        packageNumber = i // at above couriers[i].packages[packageNumber]
+                        continue
+                    }
+                    i++
+                }
+                if (breakSubjectRequest) {
+                    println("Invalid tracking number!!!")
+                    continue
+                }
+
+                i = 0
+                for (row in couriers) {
+                    println("Enter '$i' for ${row.getCourierName()}, price per kg: ${row.getPricePerKg()}")
+                    i++
+                }
+                println("Choose a Courier: ")
+                courierNumber = readln().toInt()
+
+                couriers[courierNumber].addPackage(packages[packageNumber])
+                println("Package is added to ${couriers[courierNumber].getCourierName()} courier company.")
+            }
             // Create a new courier in couriers ArrayList
-            2 -> {
+            3 -> {
                 var breakSubjectRequest: Boolean = false // bunu labeled breakle ede bilsen sil !!!
                 println("Enter the courier name: ")
                 courierName = readln()
