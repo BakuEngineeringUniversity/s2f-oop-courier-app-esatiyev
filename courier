@@ -84,10 +84,18 @@ fun main(args: Array<String>) {
         println("1: Create new package")
         println("2: Add package to specific courier")
         println("3: Create a new courier")
+
         //diger caseler
         println("Please select the subject of your request: ")
 
-       subjectrequest@when(readln().toInt()){
+        var option: Int? = null
+        do {
+            if (option != null) println("Please select valid option: ")
+
+            option = readln().toInt()
+        } while (option !in 1 .. 3)
+
+       subjectrequest@when(option){
             // Create a new package
             1 -> {
                 println("Write your specific package name: ")
@@ -160,6 +168,28 @@ fun main(args: Array<String>) {
                     continue
                 }
 
+                // check for this package is already added to any courier or not
+                i = 0
+                var j = 0
+                var breakExistPackage: Boolean = false
+
+                if (couriers.isNotEmpty())
+                    secondfor@for (row in couriers) {
+                        j = 0
+                        if (couriers[i].packages.isEmpty()) continue
+                        for (col in packages) {
+                            if (couriers[i].packages[j].getTrackingNumber() == trackingNumber ) {
+                                println("This package is already added to ${couriers[i].getCourierName()} cargo.")
+                                breakExistPackage = true
+                                break@secondfor
+                            }
+                            j++
+                        }
+                        i++
+                    }
+                if (breakExistPackage) continue
+
+
                 i = 0
                 for (row in couriers) {
                     println("Enter '$i' for ${row.getCourierName()}, price per kg: ${row.getPricePerKg()}")
@@ -197,8 +227,8 @@ fun main(args: Array<String>) {
                 couriers.add(Courier(courierName, pricePerKg))
                 println("Courier is added successfully. You can add package to this courier. Courier name: $courierName")
             }
-
-            else -> println("\nelse\n")
+            
+            else -> println("\nelse\n") // should never happen
         }
         println("\nPROCESS ENDED\n")
     }
