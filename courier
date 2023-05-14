@@ -170,27 +170,22 @@ fun main(args: Array<String>) {
                     continue
                 }
 
+
                 // check for this package is already added to any courier or not
-                i = 0
-                var j = 0
                 var breakExistPackage: Boolean = false
 
                 if (couriers.isNotEmpty())
                     secondfor@for (row in couriers) {
-                        j = 0
-                        if (couriers[i].packages.isEmpty()) continue
-                        for (col in packages) {
-                            if (couriers[i].packages[j].getTrackingNumber() == trackingNumber ) {
-                                println("This package is already added to ${couriers[i].getCourierName()} cargo.")
+                        if (couriers[i].packages.isNotEmpty())
+                        for (col in row.packages) {
+                            if (col.getTrackingNumber() == trackingNumber ) {
+                                println("This package is already added to ${row.getCourierName()} cargo.")
                                 breakExistPackage = true
                                 break@secondfor
                             }
-                            j++
                         }
-                        i++
                     }
                 if (breakExistPackage) continue
-
 
                 i = 0
                 for (row in couriers) {
@@ -250,35 +245,8 @@ fun main(args: Array<String>) {
                     continue
                 }
 
-
-                // check that this package is already added to any courier or not, if not then "continue"
-                var i = 0
-                var j = 0
-                var breakExistPackage: Boolean = true
-
-                if (couriers.isNotEmpty())
-                    secondfor@for (row in couriers) {
-                        j = 0
-                        if (couriers[i].packages.isEmpty()) continue
-                        for (col in packages) {
-                            if (couriers[i].packages[j].getTrackingNumber() == trackingNumber ) {
-                                println("This package was already added to ${couriers[i].getCourierName()} cargo.")
-                                breakExistPackage = false
-                                break@secondfor
-                            }
-                            j++
-                        }
-                        i++
-                    }
-                if (breakExistPackage) {
-                    println("This package isn't added to any courier!")
-                    println("You can add this package to the courier you want.")
-                    println("Select 2 for this operation!")
-                    continue
-                }
-
                 //printInfo(trackingNumber)
-                println("Do you really want to remove this package from ${couriers[i].getCourierName()} cargo company?")
+                println("Do you really want to remove this package from this cargo company?")
 
                 var isRemove: Boolean
                 var x: String
@@ -293,14 +261,32 @@ fun main(args: Array<String>) {
                     continue
                 }
 
-                // i and j is got at for loop
-                else {
-                    couriers[i].removePackage(packages[j])
-                    println("Package is removed successfully.")
+
+                // check that this package is already added to any courier or not, if not then "continue"
+                var breakExistPackage: Boolean = true
+
+                if (couriers.isNotEmpty())
+                    secondfor@for (row in couriers) {
+                        if (row.packages.isEmpty()) continue
+                        for (col in row.packages) {
+                            if (col.getTrackingNumber() == trackingNumber ) {
+                                row.removePackage(col)
+                                println("Package is removed successfully.")
+                                breakExistPackage = false
+                                break@secondfor
+                            }
+
+                        }
+                    }
+                if (breakExistPackage) {
+                    println("This package isn't added to any courier!")
+                    println("You can add this package to the courier you want.")
+                    println("Select 2 for this operation!")
+                    continue
                 }
 
-                println("Provide feedback. Why did you remove it from ${couriers[i].getCourierName()} cargo?")
-                println("1: I saw more cheap courier than ${couriers[i].getCourierName()} cargo.")
+                println("Provide feedback. Why did you remove it from this cargo?")
+                println("1: I saw more cheap courier than this  cargo.")
                 println("2: Delivery time is long.")
                 println("3: I will cancel the order.")
 
@@ -349,24 +335,19 @@ fun main(args: Array<String>) {
                 }
 
                 // check that this package is added to any courier or not
-                var i = 0
-                var j = 0
                 var isExistPackage: Boolean = false
 
                 if (couriers.isNotEmpty())
                     secondfor@for (row in couriers) {
-                        j = 0
-                        if (couriers[i].packages.isNotEmpty())
-                        for (col in packages) {
-                            println("$i $j bura da girdi")
-                            if (couriers[i].packages[j].getTrackingNumber() == trackingNumber ) {
-                                println("This package was added to ${couriers[i].getCourierName()} cargo.")
+                        if (row.packages.isNotEmpty())
+                        for (col in row.packages) {
+                            if (col.getTrackingNumber() == trackingNumber ) {
+                                println("This package was added to ${row.getCourierName()} cargo" +
+                                        "it cannot be deleted")
                                 isExistPackage = true
                                 break@secondfor
                             }
-                            j++
                         }
-                        i++
                     }
                 if (isExistPackage) {
                     println("For delete this package permanently firstly, you must remove this package from the courier.")
@@ -399,11 +380,42 @@ fun main(args: Array<String>) {
                 }
 
             }
+            // Delete the courier permanently
+            6 -> {
+                var i = 1
+                for (row in couriers) {
+                    println("Enter '$i' for ${row.getCourierName()}")
+                    i++
+                }
+
+                println("Which one do you want to delete? Enter a number between 1 and ${couriers.size}")
+                do {
+                    if(i == 0)
+                        println("Please enter number between 1 and ${couriers.size}")
+                    option = readln().toInt()
+                    i = 0
+                } while (option !in 1..couriers.size)
+
+                if (couriers[option as Int - 1].packages.size != 0 ) {
+                    if (couriers[option - 1].packages.size == 1)
+                        println("The courier you want to delete has a package so it cannot be deleted.\n" +
+                                "Firstly, this courier has to deliver this package!")
+                    else
+                        println("The courier you want to delete has packages so it cannot be deleted.\n" +
+                                "Firstly, this courier has to deliver these packages!")
+                    continue
+                }
+
+                println("${couriers[option - 1].getCourierName()} courier is deleted successfully.")
+                couriers.removeAt(option - 1)
+            }
+
 
             else -> println("\nelse\n") // should never happen
         }
         println("\nPROCESS ENDED\n")
     }
+
 }
 
 fun calculateWeight(): Float {
