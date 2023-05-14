@@ -85,6 +85,8 @@ fun main(args: Array<String>) {
         println("2: Add package to specific courier")
         println("3: Create a new courier")
         println("4: Remove the package from current courier")
+        println("5: Delete the package permanently")
+        println("6: Delete the courier permanently")
         //diger caseler
         println("Please select the subject of your request: ")
 
@@ -93,7 +95,7 @@ fun main(args: Array<String>) {
             if (option != null) println("Please select valid option: ")
 
             option = readln().toInt()
-        } while (option !in 1 .. 4)
+        } while (option !in 1 .. 6)
 
         subjectrequest@when(option){
             // Create a new package
@@ -325,7 +327,78 @@ fun main(args: Array<String>) {
                     else -> println("\nelse\n") // should never happen
                 }
             }
-            
+            // Delete the package permanently
+            5 -> {
+                println("Which package do you want to delete?")
+                print("Enter its tracking number for deleting: ")
+                trackingNumber = readln()
+
+                // check that tracking number is valid or not
+                var breakSubjectRequest = true
+                for (row in packages) {
+                    if(row.getTrackingNumber() == trackingNumber){
+                        breakSubjectRequest = false
+                        //packageNumber = i // at above couriers[i].packages[packageNumber]
+                        continue
+                    }
+                    // i++
+                }
+                if (breakSubjectRequest) {
+                    println("Invalid tracking number!!!")
+                    continue
+                }
+
+                // check that this package is added to any courier or not
+                var i = 0
+                var j = 0
+                var isExistPackage: Boolean = false
+
+                if (couriers.isNotEmpty())
+                    secondfor@for (row in couriers) {
+                        j = 0
+                        if (couriers[i].packages.isNotEmpty())
+                        for (col in packages) {
+                            println("$i $j bura da girdi")
+                            if (couriers[i].packages[j].getTrackingNumber() == trackingNumber ) {
+                                println("This package was added to ${couriers[i].getCourierName()} cargo.")
+                                isExistPackage = true
+                                break@secondfor
+                            }
+                            j++
+                        }
+                        i++
+                    }
+                if (isExistPackage) {
+                    println("For delete this package permanently firstly, you must remove this package from the courier.")
+                    println("Select 4 for this operation!")
+                    continue
+                }
+
+                println("Do you really want to delete this package?")
+
+                var isDelete: Boolean
+                var x: String
+                do{
+                    print("Enter Y/n: ")
+                    x = readln()
+                } while(x != "Y" && x != "n")
+                isDelete = x == "Y"
+
+                if(!isDelete) {
+                    println("Package isn't deleted!")
+                    continue
+                }
+
+
+                for (row in packages) {
+                    if (row.getTrackingNumber() == trackingNumber) {
+                        packages.remove(row)
+                        println("Package is deleted successfully.")
+                        break
+                    }
+                }
+
+            }
 
             else -> println("\nelse\n") // should never happen
         }
