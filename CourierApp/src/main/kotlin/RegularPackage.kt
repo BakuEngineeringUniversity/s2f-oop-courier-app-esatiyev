@@ -1,6 +1,6 @@
 import java.time.LocalDate
 
-open class RegularPackage (
+open class RegularPackage(
     packageName: String,
     trackingNumber: String,
     sender: String,

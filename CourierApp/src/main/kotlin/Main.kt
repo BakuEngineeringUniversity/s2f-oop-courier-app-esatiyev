@@ -5,7 +5,7 @@ fun main(args: Array<String>) {
     var user1 = User("Elton", "Satiyev", 18, "Male", "0100",
         "satiyev2004@gmail.com", "12")
     users.add(user1)
-    var USER: User
+    var USER: User = user1
 
     var recipient = "esatiyev" // bunu siliceksen user sistemmi elave edenden sonra.Userin adini atacaqsan bura
     var sender: String
@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
 
     var packageName: String
     var sizeOfPackageType = 3
-    var packages = ArrayList<Package>()
+
     var couriers = ArrayList<Courier>()
     var courierName: String
     var option: Int
@@ -93,21 +93,21 @@ fun main(args: Array<String>) {
 
         if(!condition) continue
 
-/*
-        if (userName === "" || password === "") {
-            while (userName === "") {
-                if (userName === "") {
-                    Console.WriteLine("Ooh,you didn't write your username.Please,write!!!")
-                    userName = Console.ReadLine()
-                }
-            }
-            while (password === "") {
-                if (password === "") {
-                    Console.WriteLine("Ooh,you didn't write your password.Please,write!!!")
-                    password = Console.ReadLine()
-                }
-            }
-        }*/
+        /*
+                if (userName === "" || password === "") {
+                    while (userName === "") {
+                        if (userName === "") {
+                            Console.WriteLine("Ooh,you didn't write your username.Please,write!!!")
+                            userName = Console.ReadLine()
+                        }
+                    }
+                    while (password === "") {
+                        if (password === "") {
+                            Console.WriteLine("Ooh,you didn't write your password.Please,write!!!")
+                            password = Console.ReadLine()
+                        }
+                    }
+                }*/
 
 
 
@@ -147,12 +147,15 @@ fun main(args: Array<String>) {
                         when(packageType){
                             // Regular Package
                             1 -> {
-                                packages.add(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
+
+                                USER.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                               // user1.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                //packages.add(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
                                 println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Express Package
                             2 -> {
-                                packages.add(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                USER.packages.add(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price))
                                 println("Express Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Fragile Package
@@ -163,10 +166,12 @@ fun main(args: Array<String>) {
                                     var x: String = readln()
                                     isFragile = x == "Y"
                                 } while(x != "Y" && x != "n")
-                                packages.add(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, isFragile))
+                                USER.packages.add(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, isFragile))
                                 println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
-                            else -> println("Invalid package type!!!")
+                            else -> {
+                                println("Invalid package type!!!")
+                            }
                         }
 
                     }
@@ -182,7 +187,7 @@ fun main(args: Array<String>) {
                         if (option == 0) continue
 
                         var i = 1
-                        for(row in packages) {
+                        for(row in USER.packages) {
                             println("$i. Package: ${row.getPackageName()} ")
                             println("    Sender: ${row.getSender()}")
                             println("    Tracking number: ${row.getTrackingNumber()}")
@@ -210,7 +215,7 @@ fun main(args: Array<String>) {
                                     secondfor@for (row in couriers) {
                                         if (row.packages.isNotEmpty())
                                             for (col in row.packages) {
-                                                if (col.getTrackingNumber() == packages[option - 1].getTrackingNumber()) {
+                                                if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
                                                     println("This package is already added to ${row.getCourierName()} cargo.")
                                                     breakExistPackage = true
                                                     break@secondfor
@@ -228,7 +233,7 @@ fun main(args: Array<String>) {
 
                                 val courierNumber: Int = enterNumber(0, i - 1, "Choose a Courier: ")
 
-                                couriers[courierNumber].addPackage(packages[option - 1])
+                                couriers[courierNumber].addPackage(USER.packages[option - 1])
                                 println("Package is added to ${couriers[courierNumber].getCourierName()} courier company.")
                             }
 
@@ -248,7 +253,7 @@ fun main(args: Array<String>) {
                                     secondfor@for (row in couriers) {
                                         if (row.packages.isEmpty()) continue
                                         for (col in row.packages) {
-                                            if (col.getTrackingNumber() == packages[option -1].getTrackingNumber()) {
+                                            if (col.getTrackingNumber() == USER.packages[option -1].getTrackingNumber()) {
                                                 row.removePackage(col)
                                                 println("Package is removed successfully.")
                                                 breakExistPackage = false
@@ -302,7 +307,7 @@ fun main(args: Array<String>) {
                                     secondfor@for (row in couriers) {
                                         if (row.packages.isNotEmpty())
                                             for (col in row.packages) {
-                                                if (col.getTrackingNumber() == packages[option - 1].getTrackingNumber()) {
+                                                if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
                                                     println("This package was added to ${row.getCourierName()} cargo" +
                                                             "it cannot be deleted")
                                                     isExistPackage = true
@@ -318,7 +323,7 @@ fun main(args: Array<String>) {
                                 println("Do you really want to delete this package?")
                                 if (YorN("Package isn't deleted!")) continue
 
-                                packages.removeAt(option - 1)
+                                USER.packages.removeAt(option - 1)
                                 println("Package is deleted successfully.")
                             }
 
@@ -759,4 +764,46 @@ fun enterNumber(x: Int, y: Int, message: String) : Int {
 interface PackageDelivery {
     fun getEstimatedDeliveryTime(distance: Int): String
     fun deliverPackage()
+}
+
+
+
+
+abstract class Person(
+    private var name: String,
+    private var surname: String,
+    private var age: Int,
+    private var gender: String,
+    private var phone: String,
+    private var email: String
+) {
+    fun getName(): String = name
+
+    fun getSurname(): String = surname
+    fun getEmail(): String = email
+}
+
+class User(
+    name: String,
+    surname: String,
+    age: Int,
+    gender: String,
+    phone: String,
+    email: String,
+    private var password: String
+) : Person(name, surname, age, gender, phone, email) {
+    fun getPassword(): String = password
+    fun setPassword(value: String) {
+        this.password = value
+    }
+
+    var packages = ArrayList<Package>()
+
+    fun addPackage(packet: Package) {
+        packages.add(packet)
+    }
+
+    fun removePackage(packet: Package) {
+        packages.remove(packet)
+    }
 }
