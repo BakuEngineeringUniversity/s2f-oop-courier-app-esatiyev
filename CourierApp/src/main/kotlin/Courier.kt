@@ -1,4 +1,11 @@
-class Courier(private var name: String, private var pricePerKg: Float) {
+class Courier(
+    private var name: String,
+    private var pricePerKg: Float,
+    )  {
+
+    var phone: String = ""
+    var email: String = ""
+
     fun getCourierName(): String = name
     fun setCourierName(value: String) {
         name = value

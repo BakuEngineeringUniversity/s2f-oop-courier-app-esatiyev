@@ -26,19 +26,13 @@ fun main(args: Array<String>) {
         when (option) {
             // User Interface
             1 -> {
-                println("1. Create new package")  // user
-                println("2. Add package to specific courier") //user
-                println("3. Remove the package from current courier") //user
-                println("4. Delete the package permanently") // user
-                println("5. Show package information") // user
+                println("1. Create New Package")  // user
+                println("2. My Packages") // user
+                println("3. Profile")
+                println("4. Calculator & Tariffs")
+                println("0. Sign out")
 
-                print("Enter a number: ")
-                do {
-                    option = readln().toInt()
-                    if (option !in 1..5) print("Please enter a valid number: ")
-                } while (option !in 1 .. 5)
-
-                when(option) {
+                when(enterNumber(1, 5)) {
                     // Create a new package
                     1 -> {
                         println("Write your specific package name: ")
@@ -88,290 +82,233 @@ fun main(args: Array<String>) {
                         }
 
                     }
-
-                    // Add package to specific courier
+                    // My Packages
                     2 -> {
-                        var breakSubjectRequest = true
-                        var courierNumber: Int
-                        var packageNumber = 0
-                        var i = 0
-                        println("Which package do you want to add?\nEnter its tracking number: ")
-                        trackingNumber = readln()
-
-                        // check that tracking number is valid or not
-                        for (row in packages) {
-                            if(row.getTrackingNumber() == trackingNumber){
-                                breakSubjectRequest = false
-                                packageNumber = i // at above couriers[i].packages[packageNumber]
-                                continue
-                            }
-                            i++
-                        }
-                        if (breakSubjectRequest) {
-                            println("Invalid tracking number!!!")
-                            continue
-                        }
-
-
-                        // check for this package is already added to any courier or not
-                        var breakExistPackage: Boolean = false
-
-                        if (couriers.isNotEmpty())
-                            secondfor@for (row in couriers) {
-                                if (couriers[i].packages.isNotEmpty())
-                                    for (col in row.packages) {
-                                        if (col.getTrackingNumber() == trackingNumber ) {
-                                            println("This package is already added to ${row.getCourierName()} cargo.")
-                                            breakExistPackage = true
-                                            break@secondfor
-                                        }
-                                    }
-                            }
-                        if (breakExistPackage) continue
-
-                        i = 0
-                        for (row in couriers) {
-                            println("Enter '$i' for ${row.getCourierName()}, price per kg: ${row.getPricePerKg()}")
-                            i++
-                        }
-                        println("Choose a Courier: ")
-                        courierNumber = readln().toInt()
-
-                        couriers[courierNumber].addPackage(packages[packageNumber])
-                        println("Package is added to ${couriers[courierNumber].getCourierName()} courier company.")
-                    }
-
-                    // Remove the package from specific courier
-                    3 -> {
-                        println("Which package do you want to remove from courier?")
-                        println("Enter its tracking number for removing: ")
-                        trackingNumber = readln()
-
-                        // check that tracking number is valid or not
-                        var breakSubjectRequest = true
-                        for (row in packages) {
-                            if(row.getTrackingNumber() == trackingNumber){
-                                breakSubjectRequest = false
-                                //packageNumber = i // at above couriers[i].packages[packageNumber]
-                                continue
-                            }
-                            // i++
-                        }
-                        if (breakSubjectRequest) {
-                            println("Invalid tracking number!!!")
-                            continue
-                        }
-
-                        //printInfo(trackingNumber)
-                        println("Do you really want to remove this package from this cargo company?")
-
-                        var isRemove: Boolean
-                        var x: String
-                        do{
-                            print("Enter Y/n: ")
-                            x = readln()
-                        } while(x != "Y" && x != "n")
-                        isRemove = x == "Y"
-
-                        if(!isRemove) {
-                            println("Package isn't removed!")
-                            continue
-                        }
-
-
-                        // check that this package is already added to any courier or not, if not then "continue"
-                        var breakExistPackage: Boolean = true
-
-                        if (couriers.isNotEmpty())
-                            secondfor@for (row in couriers) {
-                                if (row.packages.isEmpty()) continue
-                                for (col in row.packages) {
-                                    if (col.getTrackingNumber() == trackingNumber ) {
-                                        row.removePackage(col)
-                                        println("Package is removed successfully.")
-                                        breakExistPackage = false
-                                        break@secondfor
-                                    }
-
-                                }
-                            }
-                        if (breakExistPackage) {
-                            println("This package isn't added to any courier!")
-                            println("You can add this package to the courier you want.")
-                            println("Select 2 for this operation!")
-                            continue
-                        }
-
-                        println("Provide feedback. Why did you remove it from this cargo?")
-                        println("1: I saw more cheap courier than this  cargo.")
-                        println("2: Delivery time is long.")
-                        println("3: I will cancel the order.")
-
-                        println("4: Other.\n")
-
-                        println("Select a option: ")
-
-                        do {
-                            option = readln().toInt()
-                            if (option !in 1..4) println("Please select valid option: ")
-                        } while (option !in 1 .. 4)
-
-                        when(option) {
-                            in   1 ..  3 -> println("Thanks for your feedback.")
-
-                            4 -> {
-                                println("Enter your feedback:\n")
-                                var feedback = readln()
-                                // feedback courier-in datasina gede biler. Elave etmek olar bu ozelliyi de
-                                println("Thanks for your feedback.")
-                            }
-
-                            else -> println("\nelse\n") // should never happen
-                        }
-                    }
-
-                    // Delete the package permanently
-                    4 -> {
-                        println("Which package do you want to delete?")
-                        print("Enter its tracking number for deleting: ")
-                        trackingNumber = readln()
-
-                        // check that tracking number is valid or not
-                        var breakSubjectRequest = true
-                        for (row in packages) {
-                            if(row.getTrackingNumber() == trackingNumber){
-                                breakSubjectRequest = false
-                                //packageNumber = i // at above couriers[i].packages[packageNumber]
-                                continue
-                            }
-                            // i++
-                        }
-                        if (breakSubjectRequest) {
-                            println("Invalid tracking number!!!")
-                            continue
-                        }
-
-                        // check that this package is added to any courier or not
-                        var isExistPackage: Boolean = false
-
-                        if (couriers.isNotEmpty())
-                            secondfor@for (row in couriers) {
-                                if (row.packages.isNotEmpty())
-                                    for (col in row.packages) {
-                                        if (col.getTrackingNumber() == trackingNumber ) {
-                                            println("This package was added to ${row.getCourierName()} cargo" +
-                                                    "it cannot be deleted")
-                                            isExistPackage = true
-                                            break@secondfor
-                                        }
-                                    }
-                            }
-                        if (isExistPackage) {
-                            println("For delete this package permanently firstly, you must remove this package from the courier.")
-                            println("Select 4 for this operation!")
-                            continue
-                        }
-
-                        println("Do you really want to delete this package?")
-
-                        var isDelete: Boolean
-                        var x: String
-                        do{
-                            print("Enter Y/n: ")
-                            x = readln()
-                        } while(x != "Y" && x != "n")
-                        isDelete = x == "Y"
-
-                        if(!isDelete) {
-                            println("Package isn't deleted!")
-                            continue
-                        }
-
-
-                        for (row in packages) {
-                            if (row.getTrackingNumber() == trackingNumber) {
-                                packages.remove(row)
-                                println("Package is deleted successfully.")
-                                break
-                            }
-                        }
-
-                    }
-
-                    // Show package information
-                    5 -> {
-                        println("1. Show all packages:")
-                        println("2. Show a package")
+                        println("1. Add package to specific courier") //user / packages
+                        println("2. Remove the package from current courier") // user/ PAckages
+                        println("3. Delete the package permanently") // user / packages
+                        println("4. Show package information") // user / packages
                         println("0. Back")
 
-                        print("Enter a number: ")
-                        do {
-                            option = readln().toInt()
-                            if (option !in 0..2) print("Please enter a valid number: ")
-                        } while (option !in 0 .. 2)
+                        option = enterNumber(0, 4)
+                        if (option == 0) continue
+
+                        var i = 1
+                        for(row in packages) {
+                            println("$i. Package: ${row.getPackageName()} ")
+                            println("    Sender: ${row.getSender()}")
+                            println("    Tracking number: ${row.getTrackingNumber()}")
+                            //   println("   Price: ${row.getPrice()}")
+                            //   println("   Weight: ${col.getWeight()}")
+                            //   println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}") }")
+                            //   println("   Courier: ${row.getCourierName()}")
+                            println()
+                            i++
+                        }
+                        println("0. Back")
 
                         when(option) {
-                            // Back
-                            0 -> continue
+                            0 -> continue // Back
 
-                            // Show all packages
+                            // Add package to specific courier
                             1 -> {
-                                for(row in couriers) {
-                                    for(col in row.packages) {
-                                        println("Package : ${col.getPackageName()} ")
-                                        println("   Sender: ${col.getSender()}")
-                                        println("   Price: ${col.getPrice()}")
-                                        println("   Weight: ${col.getWeight()}")
-                                        println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}") }")
-                                        println("   Courier: ${row.getCourierName()}")
-                                        println("   Tracking number: ${col.getTrackingNumber()}")
-                                        println()
-                                    }
-                                    println("\n")
-                                }
-                            }
+                                option = enterNumber(0, i - 1, "Choose a package")
+                                if (option == 0) continue // Back
 
-                            // Show a package
-                            2 -> {
-                                var i = 1
-                                for (row in couriers) {
-                                    for (col in row.packages){
-                                        println("$i. ${col.getPackageName()}: #${col.getTrackingNumber()}")
-                                        i++
+                                // check for this package is already added to any courier or not
+                                var breakExistPackage: Boolean = false
+
+                                if (couriers.isNotEmpty())
+                                    secondfor@for (row in couriers) {
+                                        if (row.packages.isNotEmpty())
+                                            for (col in row.packages) {
+                                                if (col.getTrackingNumber() == packages[option - 1].getTrackingNumber()) {
+                                                    println("This package is already added to ${row.getCourierName()} cargo.")
+                                                    breakExistPackage = true
+                                                    break@secondfor
+                                                }
+                                            }
                                     }
-                                }
-                                println("0. Back")
-                                print("Enter a number: ")
-                                do {
-                                    option = readln().toInt()
-                                    if (option !in 0 until i)
-                                        print("Please enter a valid number: ")
-                                } while (option !in 0 until i)
+                                if (breakExistPackage) continue
 
                                 i = 1
-                                seconder@for (row in couriers) {
-                                    for (col in row.packages) {
-                                        if (i == option) {
-                                            println("Package : ${col.getPackageName()} ")
-                                            println("   Sender: ${col.getSender()}")
-                                            println("   Price: ${col.getPrice()}")
-                                            println("   Weight: ${col.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}") }")
-                                            println("   Courier: ${row.getCourierName()}")
-                                            println("   Tracking number: ${col.getTrackingNumber()}")
-                                            println()
-                                            break@seconder
+                                for (row in couriers) {
+                                    println("$i. ${row.getCourierName()}, price per kg: ${row.getPricePerKg()}")
+                                    i++
+                                }
+                                println("0. Back\n")
+
+                                val courierNumber: Int = enterNumber(0, i - 1, "Choose a Courier: ")
+
+                                couriers[courierNumber].addPackage(packages[option - 1])
+                                println("Package is added to ${couriers[courierNumber].getCourierName()} courier company.")
+                            }
+
+                            // Remove the package from current courier
+                            2 -> {
+                                option = enterNumber(0, i - 1, "Choose a package")
+                                if (option == 0) continue
+
+                                println("Do you really want to remove this package from this cargo company?")
+
+                                if (!YorN("Package isn't removed!")) continue
+
+                                // check that this package is already added to any courier or not, if not then "continue"
+                                var breakExistPackage: Boolean = true
+
+                                if (couriers.isNotEmpty())
+                                    secondfor@for (row in couriers) {
+                                        if (row.packages.isEmpty()) continue
+                                        for (col in row.packages) {
+                                            if (col.getTrackingNumber() == packages[option -1].getTrackingNumber()) {
+                                                row.removePackage(col)
+                                                println("Package is removed successfully.")
+                                                breakExistPackage = false
+                                                break@secondfor
+                                            }
+
                                         }
-                                        i++
                                     }
+                                if (breakExistPackage) {
+                                    println("This package isn't added to any courier!")
+                                    continue
+                                }
+
+                                println("Provide feedback. Why did you remove it from this cargo?")
+                                println("1: I saw more cheap courier than this  cargo.")
+                                println("2: Delivery time is long.")
+                                println("3: I will cancel the order.")
+
+                                println("4: Other.\n")
+
+                                println("Select a option: ")
+
+                                do {
+                                    option = readln().toInt()
+                                    if (option !in 1..4) println("Please select valid option: ")
+                                } while (option !in 1 .. 4)
+
+                                when(option) {
+                                    in   1 ..  3 -> println("Thanks for your feedback.")
+
+                                    4 -> {
+                                        println("Enter your feedback:\n")
+                                        var feedback = readln()
+                                        // feedback courier-in datasina gede biler. Elave etmek olar bu ozelliyi de
+                                        println("Thanks for your feedback.")
+                                    }
+
+                                    else -> println("\nelse\n") // should never happen
                                 }
                             }
+
+                            // Delete the package permanently
+                            3 -> {
+                                option = enterNumber(0, i - 1, "Choose a package")
+                                if (option == 0) continue
+
+                                // check that this package is added to any courier or not
+                                var isExistPackage: Boolean = false
+
+                                if (couriers.isNotEmpty())
+                                    secondfor@for (row in couriers) {
+                                        if (row.packages.isNotEmpty())
+                                            for (col in row.packages) {
+                                                if (col.getTrackingNumber() == packages[option - 1].getTrackingNumber()) {
+                                                    println("This package was added to ${row.getCourierName()} cargo" +
+                                                            "it cannot be deleted")
+                                                    isExistPackage = true
+                                                    break@secondfor
+                                                }
+                                            }
+                                    }
+                                if (isExistPackage) {
+                                    println("For delete this package permanently firstly, you must remove this package from the courier.")
+                                    continue
+                                }
+
+                                println("Do you really want to delete this package?")
+                                if (YorN("Package isn't deleted!")) continue
+
+                                packages.removeAt(option - 1)
+                                println("Package is deleted successfully.")
+                            }
+
+                            // Show package information
+                            4 -> {
+                                println("1. Show all packages in couriers:")
+                                println("2. Show a package in couriers")
+                                println("0. Back")
+
+                                when(enterNumber(0, 2)) {
+                                    // Back
+                                    0 -> continue
+
+                                    // Show all packages
+                                    1 -> {
+                                        for(row in couriers) {
+                                            for(col in row.packages) {
+                                                println("Package : ${col.getPackageName()} ")
+                                                println("   Sender: ${col.getSender()}")
+                                                println("   Price: ${col.getPrice()}")
+                                                println("   Weight: ${col.getWeight()}")
+                                                println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}") }")
+                                                println("   Courier: ${row.getCourierName()}")
+                                                println("   Tracking number: ${col.getTrackingNumber()}")
+                                                println()
+                                            }
+                                            println("\n")
+                                        }
+                                    }
+
+                                    // Show a package
+                                    2 -> {
+                                        var i = 1
+                                        for (row in couriers) {
+                                            for (col in row.packages){
+                                                println("$i. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+                                                i++
+                                            }
+                                        }
+                                        println("0. Back")
+
+                                        option = enterNumber(0, i - 1)
+                                        i = 1
+                                        seconder@for (row in couriers) {
+                                            for (col in row.packages) {
+                                                if (i == option) {
+                                                    println("Package : ${col.getPackageName()} ")
+                                                    println("   Sender: ${col.getSender()}")
+                                                    println("   Price: ${col.getPrice()}")
+                                                    println("   Weight: ${col.getWeight()}")
+                                                    println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}") }")
+                                                    println("   Courier: ${row.getCourierName()}")
+                                                    println("   Tracking number: ${col.getTrackingNumber()}")
+                                                    println()
+                                                    break@seconder
+                                                }
+                                                i++
+                                            }
+                                        }
+                                    } // end show a package
+                                }
+                            } // End Show Package
                         }
+
+
+                    }
+
+                    // Profile
+                    3 -> {
+
+                    }
+
+                    // Calculator & Tariffs
+                    4 -> {
+
                     }
 
                     else -> println("\nelse\n") // never should be
-
-
                 }
             }
 
@@ -687,6 +624,22 @@ fun main(args: Array<String>) {
 
 }
 
+fun YorN(message: String): Boolean {
+    val sure: Boolean
+    var x: String
+    do{
+        print("Enter Y/n: ")
+        x = readln()
+    } while(x != "Y" && x != "n")
+    sure = x == "Y"
+
+    if(!sure) {
+        println(message)
+        return false
+    }
+    return true
+}
+
 fun calculateWeight(): Float {
     val rangeStart = 0.1f
     val rangeStop = 101f
@@ -695,6 +648,25 @@ fun calculateWeight(): Float {
 
 fun setTrackingNumber(): String = Random.nextInt(1000, 10000).toString()
 
+fun enterNumber(x: Int, y: Int) : Int {
+    var option: Int
+    print("Enter a number: ")
+    do {
+        option = readln().toInt()
+        if (option !in x..y) print("Please enter a valid number: ")
+        else return option
+    } while (true)
+}
+
+fun enterNumber(x: Int, y: Int, message: String) : Int {
+    var option: Int
+    println(message)
+    do {
+        option = readln().toInt()
+        if (option !in x..y) print("Please enter a valid number: ")
+        else return option
+    } while (true)
+}
 
 interface PackageDelivery {
     fun getEstimatedDeliveryTime(distance: Int): String
