@@ -1,6 +1,14 @@
+
 import kotlin.random.Random
 
+
 fun main(args: Array<String>) {
+    var users = ArrayList<User>()
+    var user1 = User("Elton", "Satiyev", 18, "Male", "0100",
+        "satiyev2004@gmail.com", "12")
+    users.add(user1)
+    var USER: User
+
     var recipient = "esatiyev" // bunu siliceksen user sistemmi elave edenden sonra.Userin adini atacaqsan bura
     var sender: String
     var price: Float
@@ -14,14 +22,96 @@ fun main(args: Array<String>) {
     var courierName: String
     var option: Int
     var condition: Boolean = true
+    var email: String
+    var password: String
     while(true){
         println("1. Log into app as user")
         println("2. Log into app as admin")
-        println("Enter a number: ")
-        do {
-            option = readln().toInt()
-            if (option !in 1 .. 2) print("Enter a valid number: ")
-        } while (option !in 1..2)
+        option = enterNumber(1, 2)
+
+
+        if (option == 1) {
+            println("1. Log in")
+            println("2. Register")
+            println("0. Back")
+            when(enterNumber(0, 2)) {
+                0 -> continue
+
+                // Log in
+                1 -> {
+
+                    do {
+                        print("Email: ")
+                        var loggedName: String = readln()
+                        print("Password: ")
+                        var loggedPassword: String= readln()
+
+                        var auth = false
+                        for(row in users) {
+                            if (loggedName == row.getEmail() && loggedPassword == row.getPassword()) {
+                                println("Hi,${row.getName()}.You are already login in.")
+                                USER = row
+                                auth = true
+                                condition = true
+                            }
+                        }
+
+                        if (!auth) {
+                            println("Username or password is incorrect!!!")
+                            println("1. Log in")
+                            println("0. Back")
+                            if (enterNumber(0, 1) == 0){
+                                condition = false
+                                break
+                            }
+                        }
+                    } while (!auth)
+                }
+
+                // Register
+                2 -> {
+                    println("Hi,please fill below.")
+                    print("Name: ")
+                    var name: String = readln()
+                    print("Surname: ")
+                    var surname: String = readln()
+                    print("Age: ")
+                    var age: Int = readln().toInt()
+                    print("Gender: ")
+                    var gender: String = readln()
+                    print("Phone Number: ")
+                    var phone: String = readln()
+                    print("E-mail: ")
+                    var email: String = readln()
+                    print("Password: ")
+                    var password: String = readln()
+
+                    users.add(User(name, surname, age, gender, phone, email, password))
+                    println("Account is created successfully. Please login!")
+                    continue
+                }
+            }
+        }
+
+        if(!condition) continue
+
+/*
+        if (userName === "" || password === "") {
+            while (userName === "") {
+                if (userName === "") {
+                    Console.WriteLine("Ooh,you didn't write your username.Please,write!!!")
+                    userName = Console.ReadLine()
+                }
+            }
+            while (password === "") {
+                if (password === "") {
+                    Console.WriteLine("Ooh,you didn't write your password.Please,write!!!")
+                    password = Console.ReadLine()
+                }
+            }
+        }*/
+
+
 
         when (option) {
             // User Interface
