@@ -198,7 +198,6 @@ fun main(args: Array<String>) {
                             println()
                             i++
                         }
-                        println("0. Back")
 
                         when(option) {
                             0 -> continue // Back
@@ -232,9 +231,9 @@ fun main(args: Array<String>) {
                                 println("0. Back\n")
 
                                 val courierNumber: Int = enterNumber(0, i - 1, "Choose a Courier: ")
-
-                                couriers[courierNumber].addPackage(USER.packages[option - 1])
-                                println("Package is added to ${couriers[courierNumber].getCourierName()} courier company.")
+                                if(courierNumber == 0) continue
+                                couriers[courierNumber - 1].addPackage(USER.packages[option - 1])
+                                println("Package is added to ${couriers[courierNumber - 1].getCourierName()} courier company.")
                             }
 
                             // Remove the package from current courier
@@ -357,12 +356,12 @@ fun main(args: Array<String>) {
                                     // Show a package
                                     2 -> {
                                         var i = 1
-                                        for (row in couriers) {
-                                            for (col in row.packages){
-                                                println("$i. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+
+                                            for (row in USER.packages){
+                                                println("$i. ${row.getPackageName()}: #${row.getTrackingNumber()}")
                                                 i++
                                             }
-                                        }
+
                                         println("0. Back")
 
                                         option = enterNumber(0, i - 1)
@@ -757,53 +756,11 @@ fun enterNumber(x: Int, y: Int, message: String) : Int {
     do {
         option = readln().toInt()
         if (option !in x..y) print("Please enter a valid number: ")
-        else return option
-    } while (true)
+    } while (option !in x..y)
+    return option
 }
 
 interface PackageDelivery {
     fun getEstimatedDeliveryTime(distance: Int): String
     fun deliverPackage()
-}
-
-
-
-
-abstract class Person(
-    private var name: String,
-    private var surname: String,
-    private var age: Int,
-    private var gender: String,
-    private var phone: String,
-    private var email: String
-) {
-    fun getName(): String = name
-
-    fun getSurname(): String = surname
-    fun getEmail(): String = email
-}
-
-class User(
-    name: String,
-    surname: String,
-    age: Int,
-    gender: String,
-    phone: String,
-    email: String,
-    private var password: String
-) : Person(name, surname, age, gender, phone, email) {
-    fun getPassword(): String = password
-    fun setPassword(value: String) {
-        this.password = value
-    }
-
-    var packages = ArrayList<Package>()
-
-    fun addPackage(packet: Package) {
-        packages.add(packet)
-    }
-
-    fun removePackage(packet: Package) {
-        packages.remove(packet)
-    }
 }
