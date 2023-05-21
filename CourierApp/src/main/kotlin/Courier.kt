@@ -18,13 +18,40 @@ class Courier(
     }
 
 
+    var users = ArrayList<User>()
     var packages = ArrayList<Package>()
+    fun createUser(user: User) {
+        users.add(User(user.getName(), user.getSurname(), user.getAge(), user.getGender(),
+                       user.getPhone(), user.getEmail(), user.getPassword()))
+    }
+    fun deleteUser(user: User) {
+        for (row in users) {
+            if (row.getEmail() == user.getEmail())
+                users.remove(user)
+        }
+    }
 
-    fun addPackage(packet: Package) {
+    fun addPackage(packet: Package, user: User) {
+        // User's packages seperately
+        for (row in users){
+            if(row.getEmail() == user.getEmail()) {
+                row.packages.add(packet)
+            }
+        }
+
+        // All packages in courier
         packages.add(packet)
     }
 
-    fun removePackage(packet: Package) {
+    fun removePackage(packet: Package, user: User) {
+        // User's packages
+        for (row in users) {
+            if (row.getEmail() == user.getEmail()) {
+                row.packages.remove(packet)
+            }
+        }
+
+        // All packages in courier
         packages.remove(packet)
     }
 
@@ -37,12 +64,17 @@ class Courier(
         return String.format("%.2f", totalRevenue).toFloat()
     }
 
-    fun calculateDeliveryCost(trackingNumber: String): Any {
-        for (row in packages){
-            if(row.getTrackingNumber() == trackingNumber) {
-                return String.format("%.2f",pricePerKg * row.getWeight()).toFloat()
+    fun calculateDeliveryCost(trackingNumber: String, user: User): Any {
+        for (row in users) {
+            if (row.getEmail() == user.getEmail()) {
+                for (col in row.packages) {
+                    if(col.getTrackingNumber() == trackingNumber) {
+                        return String.format("%.2f",pricePerKg * col.getWeight()).toFloat()
+                    }
+                }
             }
         }
+
         return "Invalid tracking number!!!"
     }
 }
