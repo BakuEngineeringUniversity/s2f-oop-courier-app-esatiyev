@@ -7,23 +7,23 @@ fun main(args: Array<String>) {
     users.add(user1)
     var USER: User
     var uNumber: Int = 0
-    var recipient = "esatiyev" // bunu siliceksen user sistemmi elave edenden sonra.Userin adini atacaqsan bura
-    var sender: String
-    var price: Float
-    var weight: Float
-    var trackingNumber: String
+
 
     var packageName: String
     var sizeOfPackageType = 3
 
     var couriers = ArrayList<Courier>()
     var courierName: String
+
+    var recipient: String
+    var sender: String
+    var price: Float
+    var weight: Float
+    var trackingNumber: String
+
     var option: Int
     var condition: Boolean = true
-    var email: String
-    var password: String
-    var loggedName: String
-    var loggedPassword: String
+
     while(true){
         println("1. Log into app as user")
         println("2. Log into app as admin")
@@ -42,9 +42,9 @@ fun main(args: Array<String>) {
 
                     do {
                         print("Email: ")
-                        loggedName = readln()
+                        var loggedName: String = readln()
                         print("Password: ")
-                        loggedPassword = readln()
+                        var loggedPassword: String = readln()
                         var auth = false
                         var i = 0
                         for(row in users) {
@@ -125,12 +125,13 @@ fun main(args: Array<String>) {
                             if (packageType !in (0..sizeOfPackageType)) println("Invalid package type!!! Please enter valid type: ")
                         } while(packageType !in (0..sizeOfPackageType))
 
-
-                        //   var recipient = "esatiyev" // bunu siliceksen user sistemmi eleave edenden sonra.Userin adini atacaqsan bura
                         println("Write sender name: ")
                         sender = readln()
+
                         println("Write price of your product: ")
                         price = readln().toFloat()
+
+                        recipient = USER.getName() + " " + USER.getSurname()
                         weight = calculateWeight()
                         trackingNumber = setTrackingNumber()
 
@@ -173,7 +174,6 @@ fun main(args: Array<String>) {
                         println("0. Back")
 
                         option = enterNumber(0, 4)
-                        if (option == 0) continue
 
                         var i = 1
                         for(row in USER.packages) {
@@ -187,6 +187,7 @@ fun main(args: Array<String>) {
                             println()
                             i++
                         }
+                        println("0. Back")
 
                         when(option) {
                             0 -> continue // Back
@@ -201,20 +202,14 @@ fun main(args: Array<String>) {
 
 
                                     secondfor@for (row in couriers) {
-
-                                    //    for (col in row.users) {
-                                     //       if (col == USER) {
                                                 for (col in row.packages) {
                                                     if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
-                                                        println("This package is already added to ${row.getCourierName()} cargo.")
+                                                        println("This package is already added to ${row.getCourierName()} cargo." +
+                                                                "by ${col.getRecipient()}")
                                                         breakExistPackage = true
                                                         break@secondfor
                                                     }
                                                 }
-
-                                           // }
-
-                                       // }
                                     }
                                 if (breakExistPackage) continue
 
@@ -341,8 +336,9 @@ fun main(args: Array<String>) {
                                             for(col in row.users) {
                                                 if (col.getEmail() == USER.getEmail()) {
                                                     for (th in col.packages) {
-                                                        println(th.getTrackingNumber())
-                                                        println("Package : ${th.getPackageName()} ")
+                                                        condition = true
+                                                        println("Package : ${th.getPackageName()}")
+                                                        println("   Recipient: ${th.getRecipient()}")
                                                         println("   Sender: ${th.getSender()}")
                                                         println("   Price: ${th.getPrice()}")
                                                         println("   Weight: ${th.getWeight()}")
@@ -353,7 +349,6 @@ fun main(args: Array<String>) {
                                                     }
                                                 }
                                             }
-                                            println("\n")
                                         }
                                     }
 
@@ -384,7 +379,8 @@ fun main(args: Array<String>) {
                                                 if (col.getEmail() == USER.getEmail()) {
                                                     for (th in col.packages) {
                                                         if (th.getTrackingNumber() ==  USER.packages[option-1].getTrackingNumber()) {
-                                                            println("Package : ${th.getPackageName()} ")
+                                                            println("Package : ${th.getPackageName()}")
+                                                            println("   Recipient: ${th.getRecipient()}")
                                                             println("   Sender: ${th.getSender()}")
                                                             println("   Price: ${th.getPrice()}")
                                                             println("   Weight: ${th.getWeight()}")
