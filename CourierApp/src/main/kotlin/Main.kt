@@ -2,15 +2,14 @@ import kotlin.random.Random
 
 fun main(args: Array<String>) {
     var users = ArrayList<User>()
-    var user1 = User("Elton", "Satiyev", 18, "Male", "0100",
-        "a", "a")
+    val user1 = User("Elton", "Satiyev", 18, "Male", "0100",
+        "a", "a", "82tt", "a")
     users.add(user1)
     var USER: User
-    var uNumber: Int = 0
-
+    var uNumber = 0
 
     var packageName: String
-    var sizeOfPackageType = 3
+    val sizeOfPackageType = 3
 
     var couriers = ArrayList<Courier>()
     var courierName: String
@@ -34,61 +33,22 @@ fun main(args: Array<String>) {
             println("1. Log in")
             println("2. Register")
             println("0. Back")
+
             when(enterNumber(0, 2)) {
-                0 -> continue
+                0 -> continue  // Back
 
                 // Log in
                 1 -> {
-
-                    do {
-                        print("Email: ")
-                        var loggedName: String = readln()
-                        print("Password: ")
-                        var loggedPassword: String = readln()
-                        var auth = false
-                        var i = 0
-                        for(row in users) {
-                            if (loggedName == row.getEmail() && loggedPassword == row.getPassword()) {
-                                println("Hi,${row.getName()}.You are already login in.")
-                                uNumber = i  // USERin users listinde hansi oldugunu teyin etmek ucundur
-                                auth = true
-                                condition = true
-                            }
-                            i++
-                        }
-                       // USER = users[u]
-                        if (!auth) {
-                            println("Username or password is incorrect!!!")
-                            println("1. Log in")
-                            println("0. Back")
-                            if (enterNumber(0, 1) == 0){
-                                condition = false
-                                break
-                            }
-                        }
-                    } while (!auth)
+                    val (uNumber1, condition1) = login(users)
+                    uNumber = uNumber1
+                    condition = condition1
                 }
 
                 // Register
                 2 -> {
-                    println("Hi,please fill below.")
-                    print("Name: ")
-                    var name: String = readln()
-                    print("Surname: ")
-                    var surname: String = readln()
-                    print("Age: ")
-                    var age: Int = readln().toInt()
-                    print("Gender: ")
-                    var gender: String = readln()
-                    print("Phone Number: ")
-                    var phone: String = readln()
-                    print("E-mail: ")
-                    var email: String = readln()
-                    print("Password: ")
-                    var password: String = readln()
+                    users = register(users)
+                    println(users[users.size - 1].getName())
 
-                    users.add(User(name, surname, age, gender, phone, email, password))
-                    println("Account is created successfully. Please login!")
                     for (row in couriers) {
                         row.createUser(users[users.size - 1])  // son elave edilen useri courierlere elave edir
                     }
@@ -97,13 +57,12 @@ fun main(args: Array<String>) {
             }
         }
 
-        if(!condition) continue // eger 0 secib back deyirse isleyir
+        if(!condition) continue // eger 0 secib back deyirsə işləyir
 
         USER = users[uNumber]  //USER teyin edildi
         when (option) {
             // User Interface
             1 -> {
-
                 println("1. Create New Package")  // user
                 println("2. My Packages") // user
                 println("3. Profile")
@@ -113,22 +72,24 @@ fun main(args: Array<String>) {
                 when(enterNumber(1, 5)) {
                     // Create a new package
                     1 -> {
-                        println("Write your specific package name: ")
-                        packageName = readln()
                         println("Choose your package type")
                         println("1: Regular Package")
                         println("2: Express Package")
                         println("3: Fragile Package")
-                        var packageType: Int
-                        do{
-                            packageType = readln().toInt()
-                            if (packageType !in (0..sizeOfPackageType)) println("Invalid package type!!! Please enter valid type: ")
-                        } while(packageType !in (0..sizeOfPackageType))
+                        println("0. Back")
 
-                        println("Write sender name: ")
+                        val packageType: Int = enterNumber(0, sizeOfPackageType, "Choose your package type")
+
+                        if (packageType == 0) continue
+
+                        println("Enter package name: ")
+                        packageName = readln()
+
+
+                        println("Enter sender name: ")
                         sender = readln()
 
-                        println("Write price of your product: ")
+                        println("Enter price of your product: ")
                         price = readln().toFloat()
 
                         recipient = USER.getName() + " " + USER.getSurname()
@@ -139,8 +100,7 @@ fun main(args: Array<String>) {
                             // Regular Package
                             1 -> {
                                 USER.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
-                               // user1.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
-                                //packages.add(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
+
                                 println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Express Package
@@ -150,12 +110,8 @@ fun main(args: Array<String>) {
                             }
                             // Fragile Package
                             3 -> {
-                                var isFragile: Boolean
-                                do{
-                                    println("Is package fragile? (Y/n)")
-                                    var x: String = readln()
-                                    isFragile = x == "Y"
-                                } while(x != "Y" && x != "n")
+                                val isFragile: Boolean = YorN("Is package fragile? (Y/n)")
+
                                 USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, isFragile))
                                 println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
@@ -200,17 +156,17 @@ fun main(args: Array<String>) {
                                 // check for this package is already added to any courier or not
                                 var breakExistPackage: Boolean = false
 
-
-                                    secondfor@for (row in couriers) {
-                                                for (col in row.packages) {
-                                                    if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
-                                                        println("This package is already added to ${row.getCourierName()} cargo." +
-                                                                "by ${col.getRecipient()}")
-                                                        breakExistPackage = true
-                                                        break@secondfor
-                                                    }
-                                                }
+                                secondfor@for (row in couriers) {
+                                    for (col in row.packages) {
+                                        if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
+                                            println("This package is already added to ${row.getCourierName()} cargo." +
+                                                    "by ${col.getRecipient()}")
+                                            breakExistPackage = true
+                                            break@secondfor
+                                        }
                                     }
+                                }
+
                                 if (breakExistPackage) continue
 
                                 i = 1
@@ -238,12 +194,12 @@ fun main(args: Array<String>) {
                                 // check that this package is already added to any courier or not, if not then "continue"
                                 var breakExistPackage: Boolean = true
 
-                                if (couriers.isNotEmpty())
-                                    secondfor@for (row in couriers) {
-                                        if (row.packages.isEmpty()) continue
-                                        for (col in row.users) {
-                                            if (col == USER)
-                                                for (th in col.packages){
+                       //         if (couriers.isNotEmpty())
+                                secondfor@for (row in couriers) {
+                                    //  if (row.packages.isEmpty()) continue
+                                    for (col in row.users) {
+                                        if (col == USER)
+                                            for (th in col.packages){
                                                 if (th.getTrackingNumber() == USER.packages[option -1].getTrackingNumber()) {
                                                     row.removePackage(th, USER)
                                                     println("Package is removed successfully.")
@@ -253,8 +209,9 @@ fun main(args: Array<String>) {
 
                                             }
 
-                                        }
                                     }
+                                }
+
                                 if (breakExistPackage) {
                                     println("This package isn't added to any courier!")
                                     continue
@@ -267,12 +224,7 @@ fun main(args: Array<String>) {
 
                                 println("4: Other.\n")
 
-                                println("Select a option: ")
-
-                                do {
-                                    option = readln().toInt()
-                                    if (option !in 1..4) println("Please select valid option: ")
-                                } while (option !in 1 .. 4)
+                                option = enterNumber(1, 4, "Select a option: ")
 
                                 when(option) {
                                     in   1 ..  3 -> println("Thanks for your feedback.")
@@ -296,9 +248,9 @@ fun main(args: Array<String>) {
                                 // check that this package is added to any courier or not
                                 var isExistPackage: Boolean = false
 
-                                if (couriers.isNotEmpty())
+//                                if (couriers.isNotEmpty())
                                     secondfor@for (row in couriers) {
-                                        if (row.packages.isNotEmpty())
+//                                        if (row.packages.isNotEmpty())
                                             for (col in row.packages) {
                                                 if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
                                                     println("This package was added to ${row.getCourierName()} cargo" +
@@ -354,7 +306,7 @@ fun main(args: Array<String>) {
 
                                     // Show a package
                                     2 -> {
-                                        var i = 1
+                                        i = 1
                                         for (row in couriers) {
                                             for (col in row.users) {
                                                 if(col.getEmail() == USER.getEmail()) {
@@ -405,7 +357,14 @@ fun main(args: Array<String>) {
 
                     // Profile
                     3 -> {
-
+                        println("Profile\n")
+                        println("Ad: " + USER.getName())
+                        println("Surname: " + USER.getSurname())
+                        println("E-mail: " + USER.getEmail())
+                        println("Phone: " + USER.getPhone())  // changeable
+                        println("Gender: " + USER.getGender())
+                        println("Address: " + USER.getAddress()) // changeable
+                        println("Personal No: " + USER.getPersonalNo())
                     }
 
                     // Calculator & Tariffs
@@ -424,12 +383,9 @@ fun main(args: Array<String>) {
                 println("3. Get total revenue of courier(s)") // admin
                 println("4. Package Information") //admin
                 println("5. Package Operations")
+                println("0. Sign out")
 
-                print("Enter a number: ")
-                do {
-                    option = readln().toInt()
-                    if (option !in 1..5) print("Please enter a valid number: ")
-                } while (option !in 1 .. 5)
+                option = enterNumber(0, 5)
 
                 when(option) {
                     // Create a new courier at ArrayList of couriers
@@ -473,16 +429,11 @@ fun main(args: Array<String>) {
                         }
                         println("0. Back to main menu")
 
-                        print("Which one do you want to delete? Enter a number: ")
-                        do {
-                            option = readln().toInt()
-                            if(option !in 0 .. i)
-                                print("Please enter a valid number: ")
-                        } while (option !in 0..couriers.size)
+                        option = enterNumber(0, couriers.size, "Which one do you want to delete? Enter a number: ")
 
                         if(option == 0) continue // Back to main menu
 
-                        if (couriers[option as Int - 1].packages.size != 0 ) {
+                        if (couriers[option - 1].packages.size != 0 ) {
                             if (couriers[option - 1].packages.size == 1)
                                 println("The courier you want to delete has a package so it cannot be deleted.\n" +
                                         "Firstly, this courier has to deliver this package!")
@@ -502,11 +453,7 @@ fun main(args: Array<String>) {
                         println("2. Show revenue of a courier")
                         println("0. Back")
 
-                        print("Enter a number: ")
-                        do {
-                            option = readln().toInt()
-                            if (option !in 0..2) print("Please enter a valid number: ")
-                        } while (option !in 0 .. 2)
+                        option = enterNumber(0, 2)
 
                         when(option) {
                             0 -> continue // Back
@@ -517,18 +464,14 @@ fun main(args: Array<String>) {
                                     println("Courier: ${row.getCourierName()} -> Revenue: ${row.getTotalRevenue()}")
                                 }
 
-                                var x: String
-                                print("Do you want to print it? (Y/n)")
-                                do {
-                                    x = readln()
-                                } while (x != "Y" && x != "n")
-
-                                condition = x == "Y"
+                                condition = YorN("Do you want to print it? (Y/n)")
                                 if (condition) println("Printed...")
+
                                 println("Please press Enter to back")
                                 readln()
                             }
 
+                            // Show revenue of a courier
                             2 -> {
                                 println("Enter courier's name you want to see")
 
@@ -551,14 +494,7 @@ fun main(args: Array<String>) {
                                     continue
                                 }
 
-
-                                var x: String
-                                print("Do you want to print it? (Y/n)")
-                                do {
-                                    x = readln()
-                                } while (x != "Y" && x != "n")
-
-                                condition = x == "Y"
+                                condition = YorN("Do you want to print it? (Y/n)")
                                 if (condition) println("Printed...")
 
                             }
@@ -571,11 +507,7 @@ fun main(args: Array<String>) {
                         println("2. Show a package")
                         println("0. Back")
 
-                        print("Enter a number: ")
-                        do {
-                            option = readln().toInt()
-                            if (option !in 0..2) print("Please enter a valid number: ")
-                        } while (option !in 0 .. 2)
+                        enterNumber(0, 2)
 
                         when(option) {
                             // Back
@@ -609,12 +541,8 @@ fun main(args: Array<String>) {
                                     }
                                 }
                                 println("0. Back")
-                                print("Enter a number: ")
-                                do {
-                                    option = readln().toInt()
-                                    if (option !in 0 until i)
-                                        print("Please enter a valid number: ")
-                                } while (option !in 0 until i)
+
+                                option = enterNumber(0, i - 1)
 
                                 if(option == 0) continue // Back
 
@@ -652,25 +580,15 @@ fun main(args: Array<String>) {
                         }
                         println("0. Back")
 
-                        var packageOption: Int
-                        print("Enter a number: ")
-                        do {
-                            packageOption = readln().toInt()
-                            if (packageOption !in 0 until i)
-                                print("Please enter a valid number: ")
-                        } while (packageOption !in 0 until i)
+                        var packageOption: Int = enterNumber(0, i - 1)
 
                         if(packageOption == 0) continue // Back
 
                         println("1. Update Package Step")
                         println("2. Deliver the package")
                         println("0. Back")
-                        print("Enter a number: ")
-                        do {
-                            option = readln().toInt()
-                            if (option !in 0..2)
-                                print("Please enter a valid number: ")
-                        } while (option !in 0..2)
+
+                        option = enterNumber(0, 2)
 
                         when(option) {
                             0 -> continue //Back
@@ -780,4 +698,64 @@ fun enterNumber(x: Int, y: Int, message: String) : Int {
 interface PackageDelivery {
     fun getEstimatedDeliveryTime(distance: Int): String
     fun deliverPackage()
+}
+
+fun login(list: ArrayList<User>): Pair<Int, Boolean> {
+    var uNumber = 0
+    var condition: Boolean = true
+    do {
+        print("Email: ")
+        val loggedName: String = readln()
+        print("Password: ")
+        val loggedPassword: String = readln()
+        var auth = false
+
+        for((i, row) in list.withIndex()) {
+            if (loggedName == row.getEmail() && loggedPassword == row.getPassword()) {
+                println("Hi,${row.getName()}.You are already login in.")
+                uNumber = i  // USERin users listinde hansi oldugunu teyin etmek ucundur
+                auth = true
+                condition = true
+            }
+        }
+
+        if (!auth) {
+            println("Username or password is incorrect!!!")
+            println("1. Log in")
+            println("0. Back")
+            if (enterNumber(0, 1) == 0){
+                condition = false
+                break
+            }
+        }
+    } while (!auth)
+
+    return Pair(uNumber, condition)
+}
+
+fun register(list: ArrayList<User>): ArrayList<User> {
+    println("Hi,please fill below.")
+    print("Name: ")
+    val name: String = readln()
+    print("Surname: ")
+    val surname: String = readln()
+    print("Age: ")
+    val age: Int = readln().toInt()
+    print("Gender: ")
+    val gender: String = readln()
+    print("Phone Number: ")
+    val phone: String = readln()
+    print("Address: ")
+    val address: String = readln()
+    print("Personal No: ")
+    val personalNo: String = readln()
+    print("E-mail: ")
+    val email: String = readln()
+    print("Password: ")
+    val password: String = readln()
+
+    list.add(User(name, surname, age, gender, phone, email, address, personalNo, password))
+    println("Account is created successfully. Please login!")
+
+    return list
 }

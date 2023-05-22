@@ -5,11 +5,18 @@ class User(
     gender: String,
     phone: String,
     email: String,
+    address: String,
+    private var personalNo: String,
     private var password: String
-) : Person(name, surname, age, gender, phone, email) {
+) : Person(name, surname, age, gender, phone, email, address) {
     fun getPassword(): String = password
-    fun setPassword(value: String) {
-        this.password = value
+    fun setPassword(password: String) {
+        this.password = password
+    }
+
+    fun getPersonalNo(): String = personalNo
+    fun setPersonalNo(personalNo: String) {
+        this.personalNo = personalNo
     }
 
     var packages = ArrayList<Package>()
