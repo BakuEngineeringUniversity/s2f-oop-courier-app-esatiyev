@@ -20,9 +20,10 @@ class Courier(
 
     var users = ArrayList<User>()
     var packages = ArrayList<Package>()
+
     fun createUser(user: User) {
         users.add(User(user.getName(), user.getSurname(), user.getAge(), user.getGender(),
-                       user.getPhone(), user.getEmail(), user.getPassword()))
+                       user.getPhone(), user.getEmail(), user.getAddress(), user.getPersonalNo(), user.getPassword()))
     }
     fun deleteUser(user: User) {
         for (row in users) {
@@ -69,7 +70,7 @@ class Courier(
             if (row.getEmail() == user.getEmail()) {
                 for (col in row.packages) {
                     if(col.getTrackingNumber() == trackingNumber) {
-                        return String.format("%.2f",pricePerKg * col.getWeight()).toFloat()
+                        return String.format("%.2f", pricePerKg * col.getWeight()).toFloat()
                     }
                 }
             }

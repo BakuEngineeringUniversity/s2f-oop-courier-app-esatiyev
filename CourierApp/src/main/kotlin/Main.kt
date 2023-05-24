@@ -76,6 +76,9 @@ fun main(args: Array<String>) {
                         println("1: Regular Package")
                         println("2: Express Package")
                         println("3: Fragile Package")
+                        println("4. Oversized Package")
+                        println("5. Hazardous Package")
+                        println("6. Perishable Package")
                         println("0. Back")
 
                         val packageType: Int = enterNumber(0, sizeOfPackageType, "Choose your package type")
@@ -115,8 +118,26 @@ fun main(args: Array<String>) {
                                 USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, isFragile))
                                 println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
+                            // Oversized Package
+                            4 -> {
+                                USER.addPackage(OversizedPackage(packageName, trackingNumber, sender, recipient, weight, price))
+
+                                println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
+                            }
+                            // Hazardous Package
+                            5 -> {
+                                USER.addPackage(HazardousPackage(packageName, trackingNumber, sender, recipient, weight, price))
+
+                                println("Hazardous Package is added successfully. You can track it with tracking number: $trackingNumber")
+                            }
+                            // Perishable Package
+                            6 -> {
+                                USER.addPackage(PerishablePackage(packageName, trackingNumber, sender, recipient, weight, price))
+
+                                println("Perishable Package is added successfully. You can track it with tracking number: $trackingNumber")
+                            }
                             else -> {
-                                println("Invalid package type!!!")
+                                println("Invalid package type!!!")  // never should be
                             }
                         }
 
@@ -358,13 +379,40 @@ fun main(args: Array<String>) {
                     // Profile
                     3 -> {
                         println("Profile\n")
-                        println("Ad: " + USER.getName())
+                        println("Name: " + USER.getName())
                         println("Surname: " + USER.getSurname())
                         println("E-mail: " + USER.getEmail())
                         println("Phone: " + USER.getPhone())  // changeable
                         println("Gender: " + USER.getGender())
                         println("Address: " + USER.getAddress()) // changeable
                         println("Personal No: " + USER.getPersonalNo())
+
+                        println("1. Change the password")
+                        println("2. Change the phone number")
+                        println("3. Change the address")
+                        println("0. Back")
+
+                        when (enterNumber(0, 3)) {
+                            0 -> continue // Back
+
+                            // Change the password
+                            1 -> {
+                                users = changePassword(users, uNumber)
+                                USER = users[uNumber]
+                            }
+
+                            // Change the phone number
+                            2 -> {
+                                users = changePhoneNumber(users, uNumber)
+                                USER = users[uNumber]
+                            }
+
+                            // Change the address
+                            3 -> {
+                                users[uNumber].setAddress(readln())
+                                USER = users[uNumber]
+                            }
+                        }
                     }
 
                     // Calculator & Tariffs
@@ -759,3 +807,48 @@ fun register(list: ArrayList<User>): ArrayList<User> {
 
     return list
 }
+
+fun changePassword(list: ArrayList<User>, uNumber: Int): ArrayList<User> {
+    print("Enter old password: ")
+    var oldP: String
+    do {
+        oldP = readln()
+        if (oldP != list[uNumber].getPassword()) {
+            println("Password isn't correct")
+
+            print("Do you want to continue? Y/n: ")
+            if (!YorN("Password isn't changed"))  return list
+
+            print("Enter old password: ")
+        }
+    } while (oldP != list[uNumber].getPassword())
+
+    print("Enter new password: ")
+    val newP = readln()
+    list[uNumber].setPassword(newP)
+    println("Password is changed successfully!")
+
+    return list
+}
+
+fun changePhoneNumber(list: ArrayList<User>, uNumber: Int): ArrayList<User> {
+    var newPhone: String
+    println("Ex: +994-XX-XXX-XX-XX)")
+    print("Enter new phone number: +994")
+    do {
+        newPhone = readln()
+        if (newPhone.length != 9) {
+            println("Phone number isn't correct!")
+
+            print("Do you want to continue? Y/n: ")
+            if (!YorN("Phone number isn't changed"))  return list
+
+            print("Enter a valid phone number: +994")
+        }
+    } while (newPhone.length != 9)
+
+    list[uNumber].setPhone(newPhone)
+    println("Phone number is changed successfully!")
+    return list
+}
+// 1132 + 113 (3 class)

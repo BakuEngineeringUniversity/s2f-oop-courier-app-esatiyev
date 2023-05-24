@@ -12,6 +12,9 @@ abstract class Person(
     fun getAge(): Int = age
     fun getGender(): String = gender
     fun getPhone(): String = phone
+    fun setPhone(phone: String) {
+        this.phone = phone
+    }
     fun getEmail(): String = email
 
     fun getAddress(): String = address
