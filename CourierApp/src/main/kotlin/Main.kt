@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
     var uNumber = 0
 
     var packageName: String
-    val sizeOfPackageType = 3
+    val sizeOfPackageType = 6
 
     var couriers = ArrayList<Courier>()
     var courierName: String
@@ -743,11 +743,6 @@ fun enterNumber(x: Int, y: Int, message: String) : Int {
     return option
 }
 
-interface PackageDelivery {
-    fun getEstimatedDeliveryTime(distance: Int): String
-    fun deliverPackage()
-}
-
 fun login(list: ArrayList<User>): Pair<Int, Boolean> {
     var uNumber = 0
     var condition: Boolean = true
@@ -847,8 +842,16 @@ fun changePhoneNumber(list: ArrayList<User>, uNumber: Int): ArrayList<User> {
         }
     } while (newPhone.length != 9)
 
-    list[uNumber].setPhone(newPhone)
+    list[uNumber].setPhone("+994$newPhone")
     println("Phone number is changed successfully!")
     return list
+}
+
+
+
+// Interface
+interface PackageDelivery {
+    fun getEstimatedDeliveryTime(distance: Int): String
+    fun deliverPackage()
 }
 // 1132 + 113 (3 class)

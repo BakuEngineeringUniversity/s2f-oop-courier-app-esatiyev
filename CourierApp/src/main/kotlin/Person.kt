@@ -22,15 +22,3 @@ abstract class Person(
         this.address = address
     }
 }
-
-/*
-a yaradilib sonra courier yaradildi, paket yaradildi,
- show allda yaradilan paket gorsenir, //eslinde gorsetmemelidir elave edilmeyib
- show a paketde gorsenmir //bu bele duzdur
- paketi elave edende eyni paket tezeden yaranir 2 paket olur //bu eyni trackla olmamalidir
- show allda her iki paket gorsenir //duzdur
- elave edilen paketi show a paket etdikde gorsetmir, amma evvelki paket gorsenir
- 3cu paket yaradildi,elave edilmedi,amma show allda gorsedir, show ada gorsetmir
- paket elave etdim show allda yeniden 2 eded gorsenir
-
- */
