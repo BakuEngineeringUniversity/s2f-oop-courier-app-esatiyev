@@ -5,6 +5,7 @@ fun main(args: Array<String>) {
     val user1 = User("Elton", "Satiyev", 18, "Male", "0100",
         "a", "a", "82tt", "a")
     users.add(user1)
+
     var USER: User
     var uNumber = 0
 
