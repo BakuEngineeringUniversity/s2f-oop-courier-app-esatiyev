@@ -1,6 +1,7 @@
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
+
     var users = ArrayList<User>()
     val user1 = User("Elton", "Satiyev", 18, "Male", "0100",
         "a", "a", "82tt", "a")

@@ -13,7 +13,7 @@ class PerishablePackage(
     private var shelfLife: Int = Random.nextInt(10, 365),
     private var productionDate: LocalDate = LocalDate.now(),
     private var isPerishable: Boolean = true
-) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
+) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step) {
 
     fun getShelfLife(): Int = shelfLife
 

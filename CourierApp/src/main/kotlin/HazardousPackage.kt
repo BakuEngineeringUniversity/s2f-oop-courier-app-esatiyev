@@ -9,7 +9,7 @@ class HazardousPackage(
     deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var isAllow: Boolean = true
-) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
+) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step) {
     fun getIsAllow(): Boolean = isAllow
     fun setIsAllow(isAllow: Boolean) {
         this.isAllow = isAllow
