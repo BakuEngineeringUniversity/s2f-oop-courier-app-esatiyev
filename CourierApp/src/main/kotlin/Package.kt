@@ -5,6 +5,7 @@ abstract class Package(
     recipient: String,
     weight: Float,
     price: Float,
+    deliveryMethod: String,
     var step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : PackageDelivery  {
     private var packageName: String? = paackageName
@@ -45,6 +46,11 @@ abstract class Package(
         else value
     }
 
+    private var deliveryMethod: String = deliveryMethod
+    fun getDeliverMethod(): String = deliveryMethod
+    fun setDeliveryMethod(value: String) {
+        deliveryMethod = value
+    }
 
     fun updatePackageStep(value: Int){
         val statusValues = DeliveryStatus.values()

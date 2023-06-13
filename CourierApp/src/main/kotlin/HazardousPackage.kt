@@ -6,9 +6,10 @@ class HazardousPackage(
     recipient: String,
     weight: Float,
     price: Float,
+    deliveryMethod: String,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var isAllow: Boolean = true
-) : Package(packageName, trackingNumber, sender, recipient, weight, price, step), PackageDelivery {
+) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
     fun getIsAllow(): Boolean = isAllow
     fun setIsAllow(isAllow: Boolean) {
         this.isAllow = isAllow

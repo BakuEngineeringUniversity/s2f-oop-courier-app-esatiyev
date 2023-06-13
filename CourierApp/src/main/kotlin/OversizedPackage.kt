@@ -9,11 +9,12 @@ class OversizedPackage(
     recipient: String,
     weight: Float,
     price: Float,
+    deliveryMethod: String,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var length: Int = Random.nextInt(80,500),
     private var width: Int = kotlin.random.Random.nextInt(80,500),
     private var height: Int = Random.nextInt(80,500)
-) : Package(packageName, trackingNumber, sender, recipient, weight, price, step), PackageDelivery {
+) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
 
     fun getPackageLength(): Int = length
     fun setPackageLength(length: Int) {

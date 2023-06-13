@@ -7,9 +7,10 @@ class FragilePackage(
     recipient: String,
     weight: Float,
     price: Float,
+    deliveryMethod: String,
     isFragile: Boolean,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
-) : Package(packageName, trackingNumber, sender, recipient, weight, price,  step), PackageDelivery {
+) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
     protected var isFragile = isFragile
     fun getIsFragile(): Boolean = isFragile
     fun setIsFragile(value: Boolean) {
