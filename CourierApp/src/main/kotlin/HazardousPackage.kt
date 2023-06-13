@@ -15,11 +15,6 @@ class HazardousPackage(
         this.isAllow = isAllow
     }
 
-    override fun getEstimatedDeliveryTime(distance: Int): String{
-        var averageSpeed: Int = 100
-
-        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
-    }
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED

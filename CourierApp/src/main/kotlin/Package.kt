@@ -1,3 +1,6 @@
+import java.time.LocalDate
+import kotlin.random.Random
+
 abstract class Package(
     paackageName: String,
     trackingNumber: String,
@@ -8,6 +11,32 @@ abstract class Package(
     var deliveryMethod: DeliveryMethod,
     var step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : PackageDelivery  {
+
+    protected var deliveryTime: String = "0"
+    fun getDeliveryTimeFormatted(): String = deliveryTime
+    override fun getEstimatedDeliveryTime(): String{
+        if (this.deliveryTime == "0"){
+            val distance: Int = Random.nextInt(1, 1000)
+            val averageSpeed: Int = this.deliveryMethod.speed
+            this.deliveryTime = if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
+        }
+
+        var days: Long = 0
+        var s: String = ""
+        for (i in deliveryTime) {
+            if(i.isDigit()) {
+                s += i
+            }
+
+            if (i != deliveryTime[deliveryTime.length - 1])
+            if(!(i+1).isDigit()) {
+                days = s.toLong()
+            }
+        }
+        return LocalDate.now().plusDays(days).toString()
+    }
+
+
     private var packageName: String? = paackageName
     fun getPackageName() = packageName
     fun setPackageName(value: String) {
@@ -57,8 +86,4 @@ abstract class Package(
 
     }
     fun trackPackage() : Unit = println("Package with tracking number $trackingNumber is currently $step.")
-
-    override fun getEstimatedDeliveryTime(distance: Int): String = "" // it will be overrided
-
-    override fun deliverPackage() {} // it will be overrided
 }

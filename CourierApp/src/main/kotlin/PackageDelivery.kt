@@ -1,4 +1,4 @@
 interface PackageDelivery {
-    fun getEstimatedDeliveryTime(distance: Int): String
+    fun getEstimatedDeliveryTime(): String
     fun deliverPackage()
 }

@@ -39,7 +39,6 @@ class Courier(
                 row.packages.add(packet)
             }
         }
-
         // All packages in courier
         packages.add(packet)
     }

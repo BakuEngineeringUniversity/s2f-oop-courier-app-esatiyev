@@ -100,17 +100,19 @@ fun main(args: Array<String>) {
                         weight = calculateWeight()
                         trackingNumber = setTrackingNumber()
 
-                        println("1. Standart Delivery: ${DeliveryMethod.Standart.estimatedDeliveryTime}")
-                        println("2. Express Delivery: ${DeliveryMethod.Express.estimatedDeliveryTime}")
-                        println("3. Overnight Delivery:  ${DeliveryMethod.Overnight.estimatedDeliveryTime}")
+                        println("1. Standart Delivery: 7-10 days")
+                        println("2. Express Delivery: 2-4 days")
+                        println("3. Overnight Delivery: 1-2 days")
                         println("0. Back")
 
-                        var deliveryMethod: DeliveryMethod
-                        option = enterNumber(0, 3, "Select a delievry method!")
-                        if (option == 0) continue
-                        deliveryMethod = if (option == 1) DeliveryMethod.Standart
-                                         else if (option == 2) DeliveryMethod.Express
-                                         else DeliveryMethod.Overnight
+                        var deliveryMethod: DeliveryMethod = DeliveryMethod.Express
+                        if (packageType != 2){
+                            option = enterNumber(0, 3, "Select a delivery method!")
+                            if (option == 0) continue
+                            deliveryMethod = if (option == 1) DeliveryMethod.Standart
+                            else if (option == 2) DeliveryMethod.Express
+                            else DeliveryMethod.Overnight
+                        }
 
                         when(packageType){
                             // Regular Package
@@ -121,7 +123,7 @@ fun main(args: Array<String>) {
                             }
                             // Express Package
                             2 -> {
-                                USER.addPackage(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price, ))
+                                USER.addPackage(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod ))
                                 println("Express Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Fragile Package
@@ -133,19 +135,19 @@ fun main(args: Array<String>) {
                             }
                             // Oversized Package
                             4 -> {
-                                USER.addPackage(OversizedPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                USER.addPackage(OversizedPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                 println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Hazardous Package
                             5 -> {
-                                USER.addPackage(HazardousPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                USER.addPackage(HazardousPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                 println("Hazardous Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Perishable Package
                             6 -> {
-                                USER.addPackage(PerishablePackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                USER.addPackage(PerishablePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                 println("Perishable Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
@@ -212,6 +214,9 @@ fun main(args: Array<String>) {
 
                                 val courierNumber: Int = enterNumber(0, i - 1, "Choose a Courier: ")
                                 if(courierNumber == 0) continue
+
+                           //     println("Delivery time: " + USER.packages[option-1].getDeliveryTimeFormatted() )
+
                                 couriers[courierNumber - 1].addPackage(USER.packages[option - 1], USER)
                                 println("Package is added to ${couriers[courierNumber - 1].getCourierName()} courier company.")
                             }
@@ -306,7 +311,7 @@ fun main(args: Array<String>) {
                                 println("Package is deleted successfully.")
                             }
 
-                            // Show package information
+                            // Show package information in couriers
                             4 -> {
                                 println("1. Show all packages in couriers:")
                                 println("2. Show a package in couriers")
@@ -331,6 +336,7 @@ fun main(args: Array<String>) {
                                                         println("   Delivery cost: ${ row.calculateDeliveryCost("${th.getTrackingNumber()}", USER)}")
                                                         println("   Courier: ${row.getCourierName()}")
                                                         println("   Tracking number: ${th.getTrackingNumber()}")
+                                                        println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
                                                         println()
                                                     }
                                                 }
@@ -373,6 +379,7 @@ fun main(args: Array<String>) {
                                                             println("   Delivery cost: ${ row.calculateDeliveryCost("${th.getTrackingNumber()}", USER) }")
                                                             println("   Courier: ${row.getCourierName()}")
                                                             println("   Tracking number: ${th.getTrackingNumber()}")
+                                                            println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
                                                             println()
                                                             break@seconder
                                                         }

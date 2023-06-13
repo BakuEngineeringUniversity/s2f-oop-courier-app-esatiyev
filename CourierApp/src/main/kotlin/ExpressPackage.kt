@@ -7,19 +7,9 @@ class ExpressPackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryMethod: DeliveryMethod,
+    deliveryMethod: DeliveryMethod = DeliveryMethod.Express,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
-) : RegularPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
-    private var deliveryTime: String? = null
-    fun getDeliveryTime(): String? = deliveryTime
-    fun setDeliveryTime(value: String) {
-        deliveryTime = value
-    }
-
-    override fun getEstimatedDeliveryTime(distance: Int): String{
-        var averageSpeed: Int = 250
-        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
-    }
+) : RegularPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step) {
 
     override fun deliverPackage() {
         deliveryTime = LocalDate.now().toString()

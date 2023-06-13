@@ -9,13 +9,7 @@ open class RegularPackage(
     price: Float,
     deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
-) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery{
-
-    override fun getEstimatedDeliveryTime(distance: Int): String{
-        var averageSpeed: Int = 150
-
-        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
-    }
+) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step){
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED

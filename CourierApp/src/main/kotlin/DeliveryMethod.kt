@@ -1,5 +1,5 @@
-enum class DeliveryMethod(var estimatedDeliveryTime: String) {
-    Standart("8-10 days"),
-    Express("3-4 days"),
-    Overnight("1 day")
+enum class DeliveryMethod(var speed: Int) {
+    Standart(100),
+    Express(300),
+    Overnight(500)
 }

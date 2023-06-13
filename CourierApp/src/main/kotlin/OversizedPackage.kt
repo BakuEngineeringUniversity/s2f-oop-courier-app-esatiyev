@@ -38,11 +38,6 @@ class OversizedPackage(
         this.length = length
     }
 
-//    override fun getEstimatedDeliveryTime(trackingNumber: String): String{
-//        val averageSpeed: Int = 100
-////        for (row in )
-//        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
-//    }
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED

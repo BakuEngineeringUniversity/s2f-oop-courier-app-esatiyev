@@ -17,11 +17,6 @@ class FragilePackage(
         isFragile = value
     }
 
-    override fun getEstimatedDeliveryTime(distance: Int): String{
-        var averageSpeed: Int = 250
-        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
-    }
-
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
         println("Package delivered on ${LocalDate.now().toString()}")
