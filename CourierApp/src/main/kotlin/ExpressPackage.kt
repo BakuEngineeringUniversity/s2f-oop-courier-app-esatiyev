@@ -7,8 +7,9 @@ class ExpressPackage(
     recipient: String,
     weight: Float,
     price: Float,
+    deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
-) : RegularPackage(packageName, trackingNumber, sender, recipient, weight, price, step), PackageDelivery {
+) : RegularPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
     private var deliveryTime: String? = null
     fun getDeliveryTime(): String? = deliveryTime
     fun setDeliveryTime(value: String) {

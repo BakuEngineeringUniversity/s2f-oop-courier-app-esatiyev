@@ -8,7 +8,7 @@ class PerishablePackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryMethod: String,
+    deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var shelfLife: Int = Random.nextInt(10, 365),
     private var productionDate: LocalDate = LocalDate.now(),

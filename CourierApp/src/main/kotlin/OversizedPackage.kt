@@ -9,7 +9,7 @@ class OversizedPackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryMethod: String,
+    deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var length: Int = Random.nextInt(80,500),
     private var width: Int = kotlin.random.Random.nextInt(80,500),
@@ -38,11 +38,11 @@ class OversizedPackage(
         this.length = length
     }
 
-    override fun getEstimatedDeliveryTime(distance: Int): String{
-        val averageSpeed: Int = 100
-
-        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
-    }
+//    override fun getEstimatedDeliveryTime(trackingNumber: String): String{
+//        val averageSpeed: Int = 100
+////        for (row in )
+//        return if(distance / averageSpeed == 0 || distance / averageSpeed == 1) "1 day" else "${distance / averageSpeed} days"
+//    }
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED

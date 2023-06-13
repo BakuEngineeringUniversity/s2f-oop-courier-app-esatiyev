@@ -6,7 +6,7 @@ class HazardousPackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryMethod: String,
+    deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var isAllow: Boolean = true
 ) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {

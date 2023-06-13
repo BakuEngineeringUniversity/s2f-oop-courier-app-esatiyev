@@ -100,23 +100,35 @@ fun main(args: Array<String>) {
                         weight = calculateWeight()
                         trackingNumber = setTrackingNumber()
 
+                        println("1. Standart Delivery: ${DeliveryMethod.Standart.estimatedDeliveryTime}")
+                        println("2. Express Delivery: ${DeliveryMethod.Express.estimatedDeliveryTime}")
+                        println("3. Overnight Delivery:  ${DeliveryMethod.Overnight.estimatedDeliveryTime}")
+                        println("0. Back")
+
+                        var deliveryMethod: DeliveryMethod
+                        option = enterNumber(0, 3, "Select a delievry method!")
+                        if (option == 0) continue
+                        deliveryMethod = if (option == 1) DeliveryMethod.Standart
+                                         else if (option == 2) DeliveryMethod.Express
+                                         else DeliveryMethod.Overnight
+
                         when(packageType){
                             // Regular Package
                             1 -> {
-                                USER.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                USER.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                 println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Express Package
                             2 -> {
-                                USER.addPackage(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price))
+                                USER.addPackage(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price, ))
                                 println("Express Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Fragile Package
                             3 -> {
                                 val isFragile: Boolean = YorN("Is package fragile? (Y/n)")
 
-                                USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, isFragile))
+                                USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, isFragile))
                                 println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
                             }
                             // Oversized Package
@@ -846,12 +858,4 @@ fun changePhoneNumber(list: ArrayList<User>, uNumber: Int): ArrayList<User> {
     list[uNumber].setPhone("+994$newPhone")
     println("Phone number is changed successfully!")
     return list
-}
-
-
-
-// Interface
-interface PackageDelivery {
-    fun getEstimatedDeliveryTime(distance: Int): String
-    fun deliverPackage()
 }

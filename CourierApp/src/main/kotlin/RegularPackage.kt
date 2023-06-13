@@ -7,7 +7,7 @@ open class RegularPackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryMethod: String,
+    deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery{
 

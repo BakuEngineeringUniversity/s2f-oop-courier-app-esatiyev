@@ -7,7 +7,7 @@ class FragilePackage(
     recipient: String,
     weight: Float,
     price: Float,
-    deliveryMethod: String,
+    deliveryMethod: DeliveryMethod,
     isFragile: Boolean,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step), PackageDelivery {
