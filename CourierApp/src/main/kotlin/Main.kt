@@ -71,6 +71,11 @@ fun main(args: Array<String>) {
                             for (th in col.packages) {
                                 if(th.step.name == "DELIVERED" && th.getRate() == 0) {
                                     couriers = rateDelivery(th.getTrackingNumber(), USER.getEmail(), couriers)
+                                    for (i in USER.packages) {
+                                        if(i.getTrackingNumber() == th.getTrackingNumber()) {
+                                            i.setRate(th.getRate())
+                                        }
+                                    }
                                 }
                             }
                         }
