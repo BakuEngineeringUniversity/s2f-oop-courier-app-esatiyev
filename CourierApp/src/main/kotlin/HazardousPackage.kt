@@ -19,6 +19,5 @@ class HazardousPackage(
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
         println("Package delivered on ${LocalDate.now().toString()}")
-        println("Rate your regular delivery experience: ")
     }
 }

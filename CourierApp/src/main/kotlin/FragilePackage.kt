@@ -20,6 +20,5 @@ class FragilePackage(
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
         println("Package delivered on ${LocalDate.now().toString()}")
-        println("Rate your fragile package delivery experience: ")
     }
 }

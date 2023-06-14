@@ -15,6 +15,5 @@ class ExpressPackage(
         deliveryTime = LocalDate.now().toString()
         step = DeliveryStatus.DELIVERED
         println("Package delivered on $deliveryTime")
-        println("Rate your express delivery experience: ")
     }
 }

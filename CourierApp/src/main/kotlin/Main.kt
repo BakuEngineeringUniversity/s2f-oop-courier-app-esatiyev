@@ -69,11 +69,11 @@ fun main(args: Array<String>) {
                     for (col in row.users) {
                         if (col.getEmail() == USER.getEmail()) {
                             for (th in col.packages) {
-                                if(th.step.name == "DELIVERED" && th.getRate() == 0) {
+                                if(th.step.name == "DELIVERED" && th.getRating() == 0) {
                                     couriers = rateDelivery(th.getTrackingNumber(), USER.getEmail(), couriers)
                                     for (i in USER.packages) {
                                         if(i.getTrackingNumber() == th.getTrackingNumber()) {
-                                            i.setRate(th.getRate())
+                                            i.setRating(th.getRating())
                                         }
                                     }
                                 }
@@ -88,7 +88,9 @@ fun main(args: Array<String>) {
                 println("4. Calculator & Tariffs")
                 println("0. Sign out")
 
-                when(enterNumber(1, 5)) {
+                when(enterNumber(0, 4)) {
+                    0 -> continue // Sign out
+
                     // Create a new package
                     1 -> {
                         println("Choose your package type")
@@ -197,7 +199,7 @@ fun main(args: Array<String>) {
                             println()
                             i++
                         }
-                        println("0. Back")
+                        if (option != 4) println("0. Back")
 
                         when(option) {
                             0 -> continue // Back
@@ -323,7 +325,7 @@ fun main(args: Array<String>) {
                                 }
 
                                 println("Do you really want to delete this package?")
-                                if (YorN("Package isn't deleted!")) continue
+                                if (!YorN("Package isn't deleted!")) continue
 
                                 USER.packages.removeAt(option - 1)
                                 println("Package is deleted successfully.")
@@ -449,13 +451,27 @@ fun main(args: Array<String>) {
                             3 -> {
                                 users[uNumber].setAddress(readln())
                                 USER = users[uNumber]
+                                println("The address is changed successfully...")
                             }
                         }
                     }
 
                     // Calculator & Tariffs
                     4 -> {
+                        if (couriers.isEmpty())
+                            println("There isn't any courier!")
 
+                        else {
+                            var i = 1
+                            for (row in couriers) {
+                                println("$i. ${row.getCourierName()}:")
+                                println("    Price per Kg: ${row.getPricePerKg()}")
+                                i++
+                            }
+                        }
+
+                        println("Enter a key to back: ")
+                        readln()
                     }
 
                     else -> println("\nelse\n") // never should be
@@ -474,6 +490,8 @@ fun main(args: Array<String>) {
                 option = enterNumber(0, 5)
 
                 when(option) {
+                    0 -> continue // Sign out
+
                     // Create a new courier at ArrayList of couriers
                     1 -> {
                         var breakSubjectRequest: Boolean = false // bunu labeled breakle ede bilsen sil !!!
@@ -550,7 +568,8 @@ fun main(args: Array<String>) {
                                     println("Courier: ${row.getCourierName()} -> Revenue: ${row.getTotalRevenue()}")
                                 }
 
-                                condition = YorN("Do you want to print it? (Y/n)")
+                                println("Do you want to print it?")
+                                condition = YorN("Didn't print...")
                                 if (condition) println("Printed...")
 
                                 println("Please press Enter to back")
@@ -580,7 +599,8 @@ fun main(args: Array<String>) {
                                     continue
                                 }
 
-                                condition = YorN("Do you want to print it? (Y/n)")
+                                println("Do you want to print it?")
+                                condition = YorN("Didn't print...")
                                 if (condition) println("Printed...")
 
                             }
@@ -602,17 +622,21 @@ fun main(args: Array<String>) {
                             // Show all packages
                             1 -> {
                                 for(row in couriers) {
-                                    for(col in row.packages) {
-                                        println("Package : ${col.getPackageName()} ")
-                                        println("   Sender: ${col.getSender()}")
-                                        println("   Recipient: ${col.getRecipient()}")
-                                        println("   Price: ${col.getPrice()}")
-                                        println("   Weight: ${col.getWeight()}")
-                                        println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}", USER) }")
-                                        println("   Courier: ${row.getCourierName()}")
-                                        println("   Tracking number: ${col.getTrackingNumber()}")
-                                        println()
+                                    for (col in row.users) {
+                                        for(th in col.packages) {
+                                            println("Package : ${th.getPackageName()} ")
+                                            println("   Sender: ${th.getSender()}")
+                                            println("   Recipient: ${th.getRecipient()}")
+                                            println("   Price: ${th.getPrice()}")
+                                            println("   Weight: ${th.getWeight()}")
+                                            println("   Delivery cost: ${ row.calculateDeliveryCost("${th.getTrackingNumber()}", USER) }")
+                                            println("   Courier: ${row.getCourierName()}")
+                                            println("   Tracking number: ${th.getTrackingNumber()}")
+                                            println()
+                                        }
+
                                     }
+
                                     println("\n")
                                 }
                             }
@@ -755,7 +779,7 @@ fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Cour
 
                         option = enterNumber(1, 5)
                         println("Thanks for rating!")
-                        th.setRate(option)
+                        th.setRating(option)
                     }
                 }
             }
@@ -764,7 +788,7 @@ fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Cour
         // couriers.packages rate
         for (col in row.packages) {
             if(col.getTrackingNumber() == trackingNumber) {
-                col.setRate(option)
+                col.setRating(option)
             }
         }
     }
@@ -885,7 +909,7 @@ fun changePassword(list: ArrayList<User>, uNumber: Int): ArrayList<User> {
         if (oldP != list[uNumber].getPassword()) {
             println("Password isn't correct")
 
-            print("Do you want to continue? Y/n: ")
+            print("Do you want to continue?")
             if (!YorN("Password isn't changed"))  return list
 
             print("Enter old password: ")

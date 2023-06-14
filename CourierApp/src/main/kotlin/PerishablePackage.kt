@@ -28,6 +28,5 @@ class PerishablePackage(
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
         println("Package delivered on ${LocalDate.now()}")
-        println("Rate your regular delivery experience: ")
     }
 }

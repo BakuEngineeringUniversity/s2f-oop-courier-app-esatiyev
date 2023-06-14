@@ -13,8 +13,8 @@ abstract class Package(
 ) : PackageDelivery  {
 
     protected var rate: Int = 0
-    fun getRate(): Int = rate
-    fun setRate(value: Int) {
+    fun getRating(): Int = rate
+    fun setRating(value: Int) {
         rate = value
     }
 
