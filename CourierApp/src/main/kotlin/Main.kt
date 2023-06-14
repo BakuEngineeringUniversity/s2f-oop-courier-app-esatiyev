@@ -65,6 +65,18 @@ fun main(args: Array<String>) {
         when (option) {
             // User Interface
             1 -> {
+                for(row in couriers) {
+                    for (col in row.users) {
+                        if (col.getEmail() == USER.getEmail()) {
+                            for (th in col.packages) {
+                                if(th.step.name == "DELIVERED" && th.getRate() == 0) {
+                                    couriers = rateDelivery(th.getTrackingNumber(), USER.getEmail(), couriers)
+                                }
+                            }
+                        }
+                    }
+                }
+
                 println("1. Create New Package")  // user
                 println("2. My Packages") // user
                 println("3. Profile")
@@ -673,6 +685,7 @@ fun main(args: Array<String>) {
 
                                             println("Package step is updated.")
                                             println("Current step: ${col.step.name}")
+
                                             break
                                         }
                                         i++
@@ -680,12 +693,12 @@ fun main(args: Array<String>) {
                                 }
                             } // 1
 
+                            // Deliver Package
                             2 -> {
                                 i = 1
                                 for(row in couriers) {
                                     for(col in row.packages) {
                                         if(packageOption == i) {
-                                            val step = col.step.ordinal
                                             col.deliverPackage()
                                             println("Package is delivered.")
                                             println("Current step: ${col.step.name}")
@@ -719,6 +732,41 @@ fun main(args: Array<String>) {
     }
 
 }
+
+fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Courier>): ArrayList<Courier> {
+    var option: Int = 0
+    for (row in couriers) {
+        // couriers.users.packages rate
+        for (col in row.users) {
+            if(col.getEmail() == email) {
+                for (th in col.packages) {
+                    if(th.getTrackingNumber() == trackingNumber) {
+                        println("Rate us for better service:")
+                        println("1. 1 point 😕")
+                        println("2. 2 points🙁")
+                        println("3. 3 points😑")
+                        println("4. 4 points🙂")
+                        println("5. 5 points😀")
+
+                        option = enterNumber(1, 5)
+                        println("Thanks for rating!")
+                        th.setRate(option)
+                    }
+                }
+            }
+        }
+
+        // couriers.packages rate
+        for (col in row.packages) {
+            if(col.getTrackingNumber() == trackingNumber) {
+                col.setRate(option)
+            }
+        }
+    }
+
+    return couriers
+}
+
 
 fun YorN(message: String): Boolean {
     val sure: Boolean

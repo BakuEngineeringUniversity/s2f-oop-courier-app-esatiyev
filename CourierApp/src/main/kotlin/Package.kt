@@ -12,6 +12,12 @@ abstract class Package(
     var step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : PackageDelivery  {
 
+    protected var rate: Int = 0
+    fun getRate(): Int = rate
+    fun setRate(value: Int) {
+        rate = value
+    }
+
     protected var deliveryTime: String = "0"
     fun getDeliveryTimeFormatted(): String = deliveryTime
     override fun getEstimatedDeliveryTime(): String{
@@ -43,8 +49,8 @@ abstract class Package(
         packageName = value
     }
 
-    private var trackingNumber: String? = trackingNumber
-    fun getTrackingNumber(): String? = trackingNumber
+    private var trackingNumber: String = trackingNumber
+    fun getTrackingNumber(): String = trackingNumber
     fun setTrackingNumber(value: String) {
         trackingNumber = value
     }
