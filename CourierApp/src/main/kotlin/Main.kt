@@ -1,3 +1,4 @@
+import java.time.LocalDate
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
@@ -308,7 +309,6 @@ fun main(args: Array<String>) {
                                 // check that this package is added to any courier or not
                                 var isExistPackage: Boolean = false
 
-//                                if (couriers.isNotEmpty())
                                     secondfor@for (row in couriers) {
 //                                        if (row.packages.isNotEmpty())
                                             for (col in row.packages) {
@@ -328,7 +328,7 @@ fun main(args: Array<String>) {
                                 println("Do you really want to delete this package?")
                                 if (!YorN("Package isn't deleted!")) continue
 
-                                USER.packages.removeAt(option - 1)
+                                USER.removePackage(USER.packages[option-1])
                                 println("Package is deleted successfully.")
                             }
 
@@ -357,7 +357,12 @@ fun main(args: Array<String>) {
                                                         println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
                                                         println("   Courier: ${row.getCourierName()}")
                                                         println("   Tracking number: ${th.getTrackingNumber()}")
-                                                        println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
+
+                                                        if (th.step.name == "DELIVERED")
+                                                            println("   Delivery Time: ${th.getDeliveryTimeFormatted()}")
+                                                        else
+                                                            println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
+
                                                         println()
                                                     }
                                                 }
@@ -400,7 +405,12 @@ fun main(args: Array<String>) {
                                                             println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber())}")
                                                             println("   Courier: ${row.getCourierName()}")
                                                             println("   Tracking number: ${th.getTrackingNumber()}")
-                                                            println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
+
+                                                            if (th.step.name == "DELIVERED")
+                                                                println("   Delivery Time: ${th.getDeliveryTimeFormatted()}")
+                                                            else
+                                                                println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
+
                                                             println()
                                                             break@seconder
                                                         }
@@ -717,11 +727,22 @@ fun main(args: Array<String>) {
                                 for(row in couriers) {
                                     for(col in row.packages) {
                                         if(packageOption == i) {
+                                            // check that previous step is DELIVERED or not
+                                            condition = true
+                                            if (col.step.name == "DELIVERED") condition = false
+                                            //
+
                                             val step = col.step.ordinal
                                             col.updatePackageStep(step + 1)
 
                                             println("Package step is updated.")
                                             println("Current step: ${col.step.name}")
+
+                                            // update delivery time
+                                            if (col.step.name == "DELIVERED" && condition) {
+                                                col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                            }
+                                            //
 
                                             break
                                         }
@@ -736,9 +757,20 @@ fun main(args: Array<String>) {
                                 for(row in couriers) {
                                     for(col in row.packages) {
                                         if(packageOption == i) {
+                                            // check that previous step is DELIVERED or not
+                                            condition = true
+                                            if (col.step.name == "DELIVERED") condition = false
+                                            //
+
                                             col.deliverPackage()
                                             println("Package is delivered.")
                                             println("Current step: ${col.step.name}")
+
+                                            // update delivery time
+                                            if (condition)
+                                                col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                            //
+
                                             break
                                         }
                                         i++

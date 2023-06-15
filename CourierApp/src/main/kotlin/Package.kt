@@ -20,6 +20,9 @@ abstract class Package(
 
     protected var deliveryTime: String = "0"
     fun getDeliveryTimeFormatted(): String = deliveryTime
+    fun setDeliveryTimeFormatted(value: String) {
+        deliveryTime = value
+    }
     override fun getEstimatedDeliveryTime(): String{
         if (this.deliveryTime == "0"){
             val distance: Int = Random.nextInt(1, 1000)
