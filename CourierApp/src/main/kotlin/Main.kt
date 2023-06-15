@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
                 1 -> {
                     val (uNumber1, condition1) = login(users)
                     uNumber = uNumber1
-                    condition = condition1
+                    if(!condition1) condition = false
                 }
 
                 // Register
@@ -613,7 +613,7 @@ fun main(args: Array<String>) {
                         println("2. Show a package")
                         println("0. Back")
 
-                        enterNumber(0, 2)
+                        option = enterNumber(0, 2)
 
                         when(option) {
                             // Back
@@ -626,10 +626,10 @@ fun main(args: Array<String>) {
                                         for(th in col.packages) {
                                             println("Package : ${th.getPackageName()} ")
                                             println("   Sender: ${th.getSender()}")
-                                            println("   Recipient: ${th.getRecipient()}")
+                                            println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
                                             println("   Price: ${th.getPrice()}")
                                             println("   Weight: ${th.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost("${th.getTrackingNumber()}", USER) }")
+                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber(), USER) }")
                                             println("   Courier: ${row.getCourierName()}")
                                             println("   Tracking number: ${th.getTrackingNumber()}")
                                             println()
@@ -643,31 +643,34 @@ fun main(args: Array<String>) {
 
                             // Show a package
                             2 -> {
-                                var i = 1
+                                var i = 0
+                                var array = ArrayList<Package>()
                                 for (row in couriers) {
                                     for (col in row.packages){
-                                        println("$i. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+                                        println("${i+1}. ${col.getPackageName()}: #${col.getTrackingNumber()}")
                                         i++
+                                        array.add(col)
                                     }
                                 }
                                 println("0. Back")
 
-                                option = enterNumber(0, i - 1)
+                                option = enterNumber(0, i)
 
                                 if(option == 0) continue // Back
 
-                                i = 1
+                                val packet = array[option - 1]
                                 seconder@for (row in couriers) {
-                                    for (col in row.packages) {
-                                        if (i == option) {
-                                            println("Package : ${col.getPackageName()} ")
-                                            println("   Sender: ${col.getSender()}")
-                                            println("   Recipient: ${col.getRecipient()}")
-                                            println("   Price: ${col.getPrice()}")
-                                            println("   Weight: ${col.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}", USER) }")
+                                    for (col in row.users) {
+                                        for (th in col.packages)
+                                        if (th == packet) {
+                                            println("Package : ${th.getPackageName()} ")
+                                            println("   Sender: ${th.getSender()}")
+                                            println("   Recipient: ${th.getRecipient()}")
+                                            println("   Price: ${th.getPrice()}")
+                                            println("   Weight: ${th.getWeight()}")
+                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber(), USER) }")
                                             println("   Courier: ${row.getCourierName()}")
-                                            println("   Tracking number: ${col.getTrackingNumber()}")
+                                            println("   Tracking number: ${th.getTrackingNumber()}")
                                             println()
                                             break@seconder
                                         }
