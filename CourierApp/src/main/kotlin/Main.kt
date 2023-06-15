@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
                 1 -> {
                     val (uNumber1, condition1) = login(users)
                     uNumber = uNumber1
-                    if(!condition1) condition = false
+                    condition = condition1
                 }
 
                 // Register
@@ -148,7 +148,8 @@ fun main(args: Array<String>) {
                             }
                             // Fragile Package
                             3 -> {
-                                val isFragile: Boolean = YorN("Is package fragile? (Y/n)")
+                                println("Is package fragile?")
+                                val isFragile: Boolean = YorN("Package isn't fragile!")
 
                                 USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, isFragile))
                                 println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
@@ -353,7 +354,7 @@ fun main(args: Array<String>) {
                                                         println("   Sender: ${th.getSender()}")
                                                         println("   Price: ${th.getPrice()}")
                                                         println("   Weight: ${th.getWeight()}")
-                                                        println("   Delivery cost: ${ row.calculateDeliveryCost("${th.getTrackingNumber()}", USER)}")
+                                                        println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
                                                         println("   Courier: ${row.getCourierName()}")
                                                         println("   Tracking number: ${th.getTrackingNumber()}")
                                                         println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
@@ -396,7 +397,7 @@ fun main(args: Array<String>) {
                                                             println("   Sender: ${th.getSender()}")
                                                             println("   Price: ${th.getPrice()}")
                                                             println("   Weight: ${th.getWeight()}")
-                                                            println("   Delivery cost: ${ row.calculateDeliveryCost("${th.getTrackingNumber()}", USER) }")
+                                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber())}")
                                                             println("   Courier: ${row.getCourierName()}")
                                                             println("   Tracking number: ${th.getTrackingNumber()}")
                                                             println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
@@ -578,30 +579,34 @@ fun main(args: Array<String>) {
 
                             // Show revenue of a courier
                             2 -> {
-                                println("Enter courier's name you want to see")
+                                var i = 0
 
-                                condition = true
-                                courierName = readln()
                                 for (row in couriers) {
-                                    if (row.getCourierName() == courierName) {
+                                    println("$i. " + row.getCourierName())
+                                    i++
+                                }
+                                println("0. Back")
+
+                                option = enterNumber(0, i - 1, "Select a courier")
+
+                                if (option == 0) continue // Back
+                                i = 1
+                                for (row in couriers) {
+                                    if (option == i) {
                                         println("Courier: ${row.getCourierName()} ->" +
                                                 " Revenue: ${row.getTotalRevenue()}")
-                                        condition = false
 
                                         println()
-                                        println("Please press Enter to back")
-                                        readln()
                                         break
                                     }
-                                }
-                                if(condition) {
-                                    println("It isn't correct name.")
-                                    continue
                                 }
 
                                 println("Do you want to print it?")
                                 condition = YorN("Didn't print...")
                                 if (condition) println("Printed...")
+
+                                println("Please press Enter to back")
+                                readln()
 
                             }
                         }
@@ -629,7 +634,7 @@ fun main(args: Array<String>) {
                                             println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
                                             println("   Price: ${th.getPrice()}")
                                             println("   Weight: ${th.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber(), USER) }")
+                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
                                             println("   Courier: ${row.getCourierName()}")
                                             println("   Tracking number: ${th.getTrackingNumber()}")
                                             println()
@@ -668,7 +673,7 @@ fun main(args: Array<String>) {
                                             println("   Recipient: ${th.getRecipient()}")
                                             println("   Price: ${th.getPrice()}")
                                             println("   Weight: ${th.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber(), USER) }")
+                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
                                             println("   Courier: ${row.getCourierName()}")
                                             println("   Tracking number: ${th.getTrackingNumber()}")
                                             println()
@@ -773,6 +778,7 @@ fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Cour
             if(col.getEmail() == email) {
                 for (th in col.packages) {
                     if(th.getTrackingNumber() == trackingNumber) {
+                        println("Package: " + th.getPackageName() + " - " + th.getTrackingNumber())
                         println("Rate us for better service:")
                         println("1. 1 point 😕")
                         println("2. 2 points🙁")

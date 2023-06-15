@@ -64,14 +64,10 @@ class Courier(
         return String.format("%.2f", totalRevenue).toFloat()
     }
 
-    fun calculateDeliveryCost(trackingNumber: String, user: User): Any {
-        for (row in users) {
-            if (row.getEmail() == user.getEmail()) {
-                for (col in row.packages) {
-                    if(col.getTrackingNumber() == trackingNumber) {
-                        return String.format("%.2f", pricePerKg * col.getWeight()).toFloat()
-                    }
-                }
+    fun calculateDeliveryCost(trackingNumber: String): Any {
+        for (row in packages) {
+            if(row.getTrackingNumber() == trackingNumber) {
+                return String.format("%.2f", pricePerKg * row.getWeight()).toFloat()
             }
         }
 
