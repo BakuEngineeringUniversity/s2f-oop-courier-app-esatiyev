@@ -27,6 +27,7 @@ fun main(args: Array<String>) {
     var condition: Boolean = true
 
     while(true){
+        condition = true
         println("1. Log into app as user")
         println("2. Log into app as admin")
         option = enterNumber(1, 2)
@@ -785,6 +786,184 @@ fun main(args: Array<String>) {
                     } // Package Operation : 5
 
                     else -> println("\nelse\n") // never should be
+                }
+
+            }
+
+            // Courier Interface
+            3 -> {
+                println("1. Package Information")
+                println("2. Package Operations")
+                println("3. Get Total Revenue")
+                println("0. Sign Out")
+
+                option = enterNumber(0, 3)
+
+                when(option){
+                    0 -> continue // Sign Out
+                    // Package Information
+                    1 -> {
+                        println("1. Show all packages:")
+                        println("2. Show a package")
+                        println("0. Back")
+
+                        option = enterNumber(0, 2)
+
+                        when(option) {
+                            // Back
+                            0 -> continue
+
+                            // Show all packages
+                            1 -> {
+                                for (col in COURIER.users) {
+                                    for(th in col.packages) {
+                                        println("Package : ${th.getPackageName()} ")
+                                        println("   Sender: ${th.getSender()}")
+                                        println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
+                                        println("   Price: ${th.getPrice()}")
+                                        println("   Weight: ${th.getWeight()}")
+                                        println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
+                                        println("   Courier: ${COURIER.getCourierName()}")
+                                        println("   Tracking number: ${th.getTrackingNumber()}")
+                                        println()
+                                    }
+
+                                }
+
+                                println("\n")
+
+                            }
+
+                            // Show a package
+                            2 -> {
+                                var i = 0
+                                var array = ArrayList<Package>()
+
+                                for (col in COURIER.packages){
+                                    println("${i+1}. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+                                    i++
+                                    array.add(col)
+                                }
+
+                                println("0. Back")
+
+                                option = enterNumber(0, i)
+
+                                if(option == 0) continue // Back
+
+                                val packet = array[option - 1]
+
+                                seconder@for (col in COURIER.users) {
+                                    for (th in col.packages)
+                                        if (th == packet) {
+                                            println("Package : ${th.getPackageName()} ")
+                                            println("   Sender: ${th.getSender()}")
+                                            println("   Recipient: ${th.getRecipient()}")
+                                            println("   Price: ${th.getPrice()}")
+                                            println("   Weight: ${th.getWeight()}")
+                                            println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
+                                            println("   Courier: ${COURIER.getCourierName()}")
+                                            println("   Tracking number: ${th.getTrackingNumber()}")
+                                            println()
+                                            break@seconder
+                                        }
+                                    i++
+                                }
+
+                            }
+                        }
+                    }
+
+                    // Package Operations
+                    2 -> {
+                        var i: Int = 1
+                        for(row in couriers) {
+                            for(col in row.packages) {
+                                println("$i. Package : ${col.getPackageName()} , #${col.getTrackingNumber()}")
+                                i++
+                            }
+                            println("\n")
+                        }
+                        println("0. Back")
+
+                        var packageOption: Int = enterNumber(0, i - 1)
+
+                        if(packageOption == 0) continue // Back
+
+                        println("1. Update Package Step")
+                        println("2. Deliver the package")
+                        println("0. Back")
+
+                        option = enterNumber(0, 2)
+
+                        when(option) {
+                            0 -> continue //Back
+
+                            // Update Package Step
+                            1 -> {
+                                i = 1
+                                for(row in couriers) {
+                                    for(col in row.packages) {
+                                        if(packageOption == i) {
+                                            // check that previous step is DELIVERED or not
+                                            condition = true
+                                            if (col.step.name == "DELIVERED") condition = false
+                                            //
+
+                                            val step = col.step.ordinal
+                                            col.updatePackageStep(step + 1)
+
+                                            println("Package step is updated.")
+                                            println("Current step: ${col.step.name}")
+
+                                            // update delivery time
+                                            if (col.step.name == "DELIVERED" && condition) {
+                                                col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                            }
+                                            //
+
+                                            break
+                                        }
+                                        i++
+                                    }
+                                }
+                            } // 1
+
+                            // Deliver Package
+                            2 -> {
+                                i = 1
+                                for(row in couriers) {
+                                    for(col in row.packages) {
+                                        if(packageOption == i) {
+                                            // check that previous step is DELIVERED or not
+                                            condition = true
+                                            if (col.step.name == "DELIVERED") condition = false
+                                            //
+
+                                            col.deliverPackage()
+                                            println("Package is delivered.")
+                                            println("Current step: ${col.step.name}")
+
+                                            // update delivery time
+                                            if (condition)
+                                                col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                            //
+
+                                            break
+                                        }
+                                        i++
+                                    }
+                                }
+                            } //2
+
+                        } // when
+
+                    } // Package Operation : 5
+
+                    // Get Total Revenue
+                    3 -> {
+
+                    }
                 }
 
             }
