@@ -412,6 +412,8 @@ fun main(args: Array<String>) {
                                                                 println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
 
                                                             println()
+                                                            println("   Delivery Status: " + th.step.name)
+                                                            println()
                                                             break@seconder
                                                         }
                                                         i++
