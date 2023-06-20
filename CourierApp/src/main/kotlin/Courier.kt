@@ -1,11 +1,16 @@
 class Courier(
     private var name: String,
     private var pricePerKg: Float,
+    private var password: String
     ) {
 
     var phone: String = ""
     var email: String = ""
 
+    fun getPassword(): String = password
+    fun setPassword(value: String) {
+        password = value
+    }
     fun getCourierName(): String = name
     fun setCourierName(value: String) {
         name = value
