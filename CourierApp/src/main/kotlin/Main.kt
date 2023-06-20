@@ -558,405 +558,442 @@ fun main(args: Array<String>) {
 
             // Admin Interface
             2 -> {
+                var adminInterface = true
+                while (adminInterface) {
+                    println("1. Create a new courier") //admin
+                    println("2. Delete the courier permanently") // admin
+                    println("3. Get total revenue of courier(s)") // admin
+                    println("4. Package Information") //admin
+                    println("0. Sign out")
 
-                println("1. Create a new courier") //admin
-                println("2. Delete the courier permanently") // admin
-                println("3. Get total revenue of courier(s)") // admin
-                println("4. Package Information") //admin
-                println("0. Sign out")
+                    option = enterNumber(0, 4)
 
-                option = enterNumber(0, 4)
+                    when(option) {
+                        0 -> adminInterface = false // Sign out
 
-                when(option) {
-                    0 -> continue // Sign out
+                        // Create a new courier at ArrayList of couriers
+                        1 -> {
+                            var breakSubjectRequest: Boolean = false // bunu labeled breakle ede bilsen sil !!!
+                            println("Enter the courier name: ")
+                            courierName = readln()
 
-                    // Create a new courier at ArrayList of couriers
-                    1 -> {
-                        var breakSubjectRequest: Boolean = false // bunu labeled breakle ede bilsen sil !!!
-                        println("Enter the courier name: ")
-                        courierName = readln()
+                            // check that this courier with this name has already exist or not
+                            for(row: Courier in couriers){
+                                if(row.getCourierName() == courierName){
+                                    println("This courier has already exist!!!")
+                                    breakSubjectRequest = true
+                                    //conti@subjectrequest
+                                }
+                            }
+                            if(breakSubjectRequest) continue
 
-                        // check that this courier with this name has already exist or not
-                        for(row: Courier in couriers){
-                            if(row.getCourierName() == courierName){
-                                println("This courier has already exist!!!")
-                                breakSubjectRequest = true
-                                //conti@subjectrequest
+                            println("Enter delivery price per kg: ")
+                            var pricePerKg: Float
+                            do{
+                                pricePerKg = readln().toFloat()
+                                if (pricePerKg <= 0f) println("Delivery price must be more than 0!!! Please enter valid price: ")
+                            } while(pricePerKg <= 0f)
+
+                            print("Enter password: ")
+                            val password: String = readln()
+                            couriers.add(Courier(courierName, pricePerKg, password))
+                            println("Courier is added successfully. You can add package to this courier. Courier name: $courierName")
+
+                            for (row in users) {
+                                couriers[couriers.size - 1].createUser(row)  // en son elave edilen couriere butun userleri elave edir
                             }
                         }
-                        if(breakSubjectRequest) continue
 
-                        println("Enter delivery price per kg: ")
-                        var pricePerKg: Float
-                        do{
-                            pricePerKg = readln().toFloat()
-                            if (pricePerKg <= 0f) println("Delivery price must be more than 0!!! Please enter valid price: ")
-                        } while(pricePerKg <= 0f)
+                        // Delete the courier permanently
+                        2 -> {
 
-                        print("Enter password: ")
-                        val password: String = readln()
-                        couriers.add(Courier(courierName, pricePerKg, password))
-                        println("Courier is added successfully. You can add package to this courier. Courier name: $courierName")
+                            var i = 0
+                            for (row in couriers) {
+                                i++
+                                println("$i. ${row.getCourierName()}")
+                            }
+                            println("0. Back")
 
-                        for (row in users) {
-                            couriers[couriers.size - 1].createUser(row)  // en son elave edilen couriere butun userleri elave edir
-                        }
-                    }
+                            option = enterNumber(0, couriers.size, "Which one do you want to delete? Enter a number: ")
 
-                    // Delete the courier permanently
-                    2 -> {
+                            if(option == 0) continue // Back
 
-                        var i = 0
-                        for (row in couriers) {
-                            i++
-                            println("$i. ${row.getCourierName()}")
-                        }
-                        println("0. Back to main menu")
-
-                        option = enterNumber(0, couriers.size, "Which one do you want to delete? Enter a number: ")
-
-                        if(option == 0) continue // Back to main menu
-
-                        if (couriers[option - 1].packages.size != 0 ) {
-                            if (couriers[option - 1].packages.size == 1)
-                                println("The courier you want to delete has a package so it cannot be deleted.\n" +
-                                        "Firstly, this courier has to deliver this package!")
-                            else
-                                println("The courier you want to delete has packages so it cannot be deleted.\n" +
-                                        "Firstly, this courier has to deliver these packages!")
-                            continue
-                        }
-
-                        println("${couriers[option - 1].getCourierName()} courier is deleted successfully.")
-                        couriers.removeAt(option - 1)
-                    }
-
-                    // Get total revenue of a courier
-                    3 -> {
-                        println("1. Show revenues of all couriers")
-                        println("2. Show revenue of a courier")
-                        println("0. Back")
-
-                        option = enterNumber(0, 2)
-
-                        when(option) {
-                            0 -> continue // Back
-
-                            // Show revenues of all couriers
-                            1 -> {
-                                for (row in couriers) {
-                                    println("Courier: ${row.getCourierName()} -> Revenue: ${row.getTotalRevenue()}")
-                                }
-
-                                println("Do you want to print it?")
-                                condition = YorN("Didn't print...")
-                                if (condition) println("Printed...")
-
-                                println("Please press Enter to back")
-                                readln()
+                            if (couriers[option - 1].packages.size != 0 ) {
+                                if (couriers[option - 1].packages.size == 1)
+                                    println("The courier you want to delete has a package so it cannot be deleted.\n" +
+                                            "Firstly, this courier has to deliver this package!")
+                                else
+                                    println("The courier you want to delete has packages so it cannot be deleted.\n" +
+                                            "Firstly, this courier has to deliver these packages!")
+                                continue
                             }
 
-                            // Show revenue of a courier
-                            2 -> {
-                                var i = 0
+                            println("${couriers[option - 1].getCourierName()} courier is deleted successfully.")
+                            couriers.removeAt(option - 1)
+                        }
 
-                                for (row in couriers) {
-                                    println("$i. " + row.getCourierName())
-                                    i++
-                                }
+                        // Get total revenue of a courier
+                        3 -> {
+                            var getTotalRevenue = true
+                            while (getTotalRevenue) {
+                                println("1. Show revenues of all couriers")
+                                println("2. Show revenue of a courier")
                                 println("0. Back")
 
-                                option = enterNumber(0, i - 1, "Select a courier")
+                                option = enterNumber(0, 2)
 
-                                if (option == 0) continue // Back
-                                i = 1
-                                for (row in couriers) {
-                                    if (option == i) {
-                                        println("Courier: ${row.getCourierName()} ->" +
-                                                " Revenue: ${row.getTotalRevenue()}")
+                                when(option) {
+                                    0 -> getTotalRevenue = false // Back
 
-                                        println()
-                                        break
+                                    // Show revenues of all couriers
+                                    1 -> {
+                                        for (row in couriers) {
+                                            println("Courier: ${row.getCourierName()} -> Revenue: ${row.getTotalRevenue()}")
+                                        }
+
+                                        println("Do you want to print it?")
+                                        condition = YorN("Didn't print...")
+                                        if (condition) println("Printed...")
+
+                                        println("Please press Enter to back")
+                                        readln()
+                                    }
+
+                                    // Show revenue of a courier
+                                    2 -> {
+                                        var i = 1
+
+                                        for (row in couriers) {
+                                            println("$i. " + row.getCourierName())
+                                            i++
+                                        }
+                                        println("0. Back")
+
+                                        option = enterNumber(0, i, "Select a courier")
+
+                                        if (option == 0) {
+                                            continue
+                                        } // Back
+
+                                        i = 1
+                                        for (row in couriers) {
+                                            if (option == i) {
+                                                println("Courier: ${row.getCourierName()} ->" +
+                                                        " Revenue: ${row.getTotalRevenue()}")
+
+                                                println()
+                                                break
+                                            }
+                                            i++
+                                        }
+
+                                        println("Do you want to print it?")
+                                        condition = YorN("Didn't print...")
+                                        if (condition) println("Printed...")
+
+                                        println("Please press Enter to back")
+                                        readln()
+
+
+
                                     }
                                 }
-
-                                println("Do you want to print it?")
-                                condition = YorN("Didn't print...")
-                                if (condition) println("Printed...")
-
-                                println("Please press Enter to back")
-                                readln()
 
                             }
                         }
-                    }
 
-                    // Package Information
-                    4 -> {
-                        println("1. Show all packages:")
-                        println("2. Show a package")
-                        println("0. Back")
-
-                        option = enterNumber(0, 2)
-
-                        when(option) {
-                            // Back
-                            0 -> continue
-
-                            // Show all packages
-                            1 -> {
-                                for(row in couriers) {
-                                    for (col in row.users) {
-                                        for(th in col.packages) {
-                                            println("Package : ${th.getPackageName()} ")
-                                            println("   Sender: ${th.getSender()}")
-                                            println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
-                                            println("   Price: ${th.getPrice()}")
-                                            println("   Weight: ${th.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                            println("   Courier: ${row.getCourierName()}")
-                                            println("   Tracking number: ${th.getTrackingNumber()}")
-                                            println()
-                                        }
-
-                                    }
-
-                                    println("\n")
-                                }
-                            }
-
-                            // Show a package
-                            2 -> {
-                                var i = 0
-                                var array = ArrayList<Package>()
-                                for (row in couriers) {
-                                    for (col in row.packages){
-                                        println("${i+1}. ${col.getPackageName()}: #${col.getTrackingNumber()}")
-                                        i++
-                                        array.add(col)
-                                    }
-                                }
+                        // Package Information
+                        4 -> {
+                            var packageInformation = true
+                            while (packageInformation) {
+                                println("1. Show all packages:")
+                                println("2. Show a package")
                                 println("0. Back")
 
-                                option = enterNumber(0, i)
+                                option = enterNumber(0, 2)
 
-                                if(option == 0) continue // Back
+                                when(option) {
+                                    // Back
+                                    0 -> packageInformation = false
 
-                                val packet = array[option - 1]
-                                seconder@for (row in couriers) {
-                                    for (col in row.users) {
-                                        for (th in col.packages)
-                                        if (th == packet) {
-                                            println("Package : ${th.getPackageName()} ")
-                                            println("   Sender: ${th.getSender()}")
-                                            println("   Recipient: ${th.getRecipient()}")
-                                            println("   Price: ${th.getPrice()}")
-                                            println("   Weight: ${th.getWeight()}")
-                                            println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                            println("   Courier: ${row.getCourierName()}")
-                                            println("   Tracking number: ${th.getTrackingNumber()}")
-                                            println()
-                                            break@seconder
+                                    // Show all packages
+                                    1 -> {
+                                        for(row in couriers) {
+                                            for (col in row.users) {
+                                                for(th in col.packages) {
+                                                    println("Package : ${th.getPackageName()} ")
+                                                    println("   Sender: ${th.getSender()}")
+                                                    println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
+                                                    println("   Price: ${th.getPrice()}")
+                                                    println("   Weight: ${th.getWeight()}")
+                                                    println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
+                                                    println("   Courier: ${row.getCourierName()}")
+                                                    println("   Tracking number: ${th.getTrackingNumber()}")
+                                                    println()
+                                                }
+
+                                            }
+
+                                            println("\n")
                                         }
-                                        i++
+                                        println("Please press Enter to back")
+                                        readln()
+                                    }
+
+                                    // Show a package
+                                    2 -> {
+                                        var i = 0
+                                        var array = ArrayList<Package>()
+                                        for (row in couriers) {
+                                            for (col in row.packages){
+                                                println("${i+1}. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+                                                i++
+                                                array.add(col)
+                                            }
+                                        }
+                                        println("0. Back")
+
+                                        option = enterNumber(0, i)
+
+                                        if(option == 0) continue // Back
+
+                                        val packet = array[option - 1]
+                                        seconder@for (row in couriers) {
+                                            for (col in row.users) {
+                                                for (th in col.packages)
+                                                    if (th == packet) {
+                                                        println("Package : ${th.getPackageName()} ")
+                                                        println("   Sender: ${th.getSender()}")
+                                                        println("   Recipient: ${th.getRecipient()}")
+                                                        println("   Price: ${th.getPrice()}")
+                                                        println("   Weight: ${th.getWeight()}")
+                                                        println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
+                                                        println("   Courier: ${row.getCourierName()}")
+                                                        println("   Tracking number: ${th.getTrackingNumber()}")
+                                                        println()
+                                                        break@seconder
+                                                    }
+                                                i++
+                                            }
+                                        }
                                     }
                                 }
+
                             }
                         }
+
+                        else -> println("\nelse\n") // never should be
                     }
 
-                    else -> println("\nelse\n") // never should be
                 }
+
 
             }
 
             // Courier Interface
             3 -> {
                 COURIER = couriers[uNumber]
-                println("1. Package Information")
-                println("2. Package Operations")
-                println("3. Get Total Revenue")
-                println("0. Sign Out")
 
-                option = enterNumber(0, 3)
+                var courierInterface = true
+                while (courierInterface) {
+                    println("1. Package Information")
+                    println("2. Package Operations")
+                    println("3. Get Total Revenue")
+                    println("0. Sign Out")
 
-                when(option){
-                    0 -> continue // Sign Out
-                    // Package Information
-                    1 -> {
-                        println("1. Show all packages:")
-                        println("2. Show a package")
-                        println("0. Back")
+                    option = enterNumber(0, 3)
 
-                        option = enterNumber(0, 2)
+                    when(option){
+                        0 -> courierInterface = false // Sign Out
 
-                        when(option) {
-                            // Back
-                            0 -> continue
+                        // Package Information
+                        1 -> {
+                            var packageInformation = true
+                            while (packageInformation) {
+                                println("1. Show all packages:")
+                                println("2. Show a package")
+                                println("0. Back")
 
-                            // Show all packages
-                            1 -> {
-                                for (col in COURIER.users) {
-                                    for(th in col.packages) {
-                                        println("Package : ${th.getPackageName()} ")
-                                        println("   Sender: ${th.getSender()}")
-                                        println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
-                                        println("   Price: ${th.getPrice()}")
-                                        println("   Weight: ${th.getWeight()}")
-                                        println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                        println("   Courier: ${COURIER.getCourierName()}")
-                                        println("   Tracking number: ${th.getTrackingNumber()}")
-                                        println()
+                                option = enterNumber(0, 2)
+
+                                when(option) {
+                                    // Back
+                                    0 -> packageInformation = false
+
+                                    // Show all packages
+                                    1 -> {
+                                        for (col in COURIER.users) {
+                                            for(th in col.packages) {
+                                                println("Package : ${th.getPackageName()} ")
+                                                println("   Sender: ${th.getSender()}")
+                                                println("   Recipient: ${th.getRecipient()}" + " - " + col.getPersonalNo())
+                                                println("   Price: ${th.getPrice()}")
+                                                println("   Weight: ${th.getWeight()}")
+                                                println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
+                                                println("   Courier: ${COURIER.getCourierName()}")
+                                                println("   Tracking number: ${th.getTrackingNumber()}")
+                                                println()
+                                            }
+
+                                        }
+
+                                        println("\n")
+
                                     }
 
+                                    // Show a package
+                                    2 -> {
+                                        var i = 0
+                                        var array = ArrayList<Package>()
+
+                                        for (col in COURIER.packages){
+                                            println("${i+1}. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+                                            i++
+                                            array.add(col)
+                                        }
+
+                                        println("0. Back")
+
+                                        option = enterNumber(0, i)
+
+                                        if(option == 0) continue // Back
+
+                                        val packet = array[option - 1]
+
+                                        seconder@for (col in COURIER.users) {
+                                            for (th in col.packages)
+                                                if (th == packet) {
+                                                    println("Package : ${th.getPackageName()} ")
+                                                    println("   Sender: ${th.getSender()}")
+                                                    println("   Recipient: ${th.getRecipient()}")
+                                                    println("   Price: ${th.getPrice()}")
+                                                    println("   Weight: ${th.getWeight()}")
+                                                    println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
+                                                    println("   Courier: ${COURIER.getCourierName()}")
+                                                    println("   Tracking number: ${th.getTrackingNumber()}")
+                                                    println()
+                                                    break@seconder
+                                                }
+                                            i++
+                                        }
+
+                                    }
                                 }
 
-                                println("\n")
-
                             }
+                        }
 
-                            // Show a package
-                            2 -> {
-                                var i = 0
-                                var array = ArrayList<Package>()
+                        // Package Operations
+                        2 -> {
+                            var packageOperations = true
+                            while (packageOperations) {
+                                var i: Int = 1
 
-                                for (col in COURIER.packages){
-                                    println("${i+1}. ${col.getPackageName()}: #${col.getTrackingNumber()}")
+                                for(col in COURIER.packages) {
+                                    println("$i. Package : ${col.getPackageName()} , #${col.getTrackingNumber()}")
                                     i++
-                                    array.add(col)
                                 }
 
                                 println("0. Back")
 
-                                option = enterNumber(0, i)
+                                var packageOption: Int = enterNumber(0, i - 1)
 
-                                if(option == 0) continue // Back
+                                if(packageOption == 0) {
+                                    packageOperations = false
+                                    continue
+                                } // Back
 
-                                val packet = array[option - 1]
+                                println("1. Update Package Step")
+                                println("2. Deliver the package")
+                                println("0. Back")
 
-                                seconder@for (col in COURIER.users) {
-                                    for (th in col.packages)
-                                        if (th == packet) {
-                                            println("Package : ${th.getPackageName()} ")
-                                            println("   Sender: ${th.getSender()}")
-                                            println("   Recipient: ${th.getRecipient()}")
-                                            println("   Price: ${th.getPrice()}")
-                                            println("   Weight: ${th.getWeight()}")
-                                            println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                            println("   Courier: ${COURIER.getCourierName()}")
-                                            println("   Tracking number: ${th.getTrackingNumber()}")
-                                            println()
-                                            break@seconder
-                                        }
-                                    i++
-                                }
+                                option = enterNumber(0, 2)
 
-                            }
-                        }
-                    }
+                                when(option) {
+                                    0 -> continue //Back
 
-                    // Package Operations
-                    2 -> {
-                        var i: Int = 1
+                                    // Update Package Step
+                                    1 -> {
+                                        i = 1
 
-                        for(col in COURIER.packages) {
-                            println("$i. Package : ${col.getPackageName()} , #${col.getTrackingNumber()}")
-                            i++
-                        }
+                                        for(col in COURIER.packages) {
+                                            if(packageOption == i) {
+                                                // check that previous step is DELIVERED or not
+                                                condition = true
+                                                if (col.step.name == "DELIVERED") condition = false
+                                                //
 
-                        println("0. Back")
+                                                val step = col.step.ordinal
+                                                col.updatePackageStep(step + 1)
 
-                        var packageOption: Int = enterNumber(0, i - 1)
+                                                println("Package step is updated.")
+                                                println("Current step: ${col.step.name}")
 
-                        if(packageOption == 0) continue // Back
+                                                // update delivery time
+                                                if (col.step.name == "DELIVERED" && condition) {
+                                                    col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                                }
+                                                //
 
-                        println("1. Update Package Step")
-                        println("2. Deliver the package")
-                        println("0. Back")
-
-                        option = enterNumber(0, 2)
-
-                        when(option) {
-                            0 -> continue //Back
-
-                            // Update Package Step
-                            1 -> {
-                                i = 1
-
-                                    for(col in COURIER.packages) {
-                                        if(packageOption == i) {
-                                            // check that previous step is DELIVERED or not
-                                            condition = true
-                                            if (col.step.name == "DELIVERED") condition = false
-                                            //
-
-                                            val step = col.step.ordinal
-                                            col.updatePackageStep(step + 1)
-
-                                            println("Package step is updated.")
-                                            println("Current step: ${col.step.name}")
-
-                                            // update delivery time
-                                            if (col.step.name == "DELIVERED" && condition) {
-                                                col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                                break
                                             }
-                                            //
-
-                                            break
+                                            i++
                                         }
-                                        i++
-                                    }
 
-                            } // 1
+                                    } // Update Package Step
 
-                            // Deliver Package
-                            2 -> {
-                                i = 1
+                                    // Deliver Package
+                                    2 -> {
+                                        i = 1
 
-                                for(col in COURIER.packages) {
-                                    if(packageOption == i) {
-                                        // check that previous step is DELIVERED or not
-                                        condition = true
-                                        if (col.step.name == "DELIVERED") condition = false
-                                        //
+                                        for(col in COURIER.packages) {
+                                            if(packageOption == i) {
+                                                // check that previous step is DELIVERED or not
+                                                condition = true
+                                                if (col.step.name == "DELIVERED") condition = false
+                                                //
 
-                                        col.deliverPackage()
-                                        println("Package is delivered.")
-                                        println("Current step: ${col.step.name}")
+                                                col.deliverPackage()
+                                                println("Package is delivered.")
+                                                println("Current step: ${col.step.name}")
 
-                                        // update delivery time
-                                        if (condition)
-                                            col.setDeliveryTimeFormatted(LocalDate.now().toString())
-                                        //
+                                                // update delivery time
+                                                if (condition)
+                                                    col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                                //
 
-                                        break
-                                    }
-                                    i++
-                                }
+                                                break
+                                            }
+                                            i++
+                                        }
 
-                            } //2
+                                    } // Deliver Package
 
-                        } // when
+                                } // when
 
-                    } // Package Operation
+                            } // while(packageOperations)
 
-                    // Get Total Revenue
-                    3 -> {
+                        } // Package Operation
 
-                        println("Courier: ${COURIER.getCourierName()} ->" +
-                                " Revenue: ${COURIER.getTotalRevenue()}")
+                        // Get Total Revenue
+                        3 -> {
 
-
-                        println("Do you want to print it?")
-                        condition = YorN("Didn't print...")
-                        if (condition) println("Printed...")
-
-                        println("Please press Enter to back")
-                        readln()
+                            println("Courier: ${COURIER.getCourierName()} ->" +
+                                    " Revenue: ${COURIER.getTotalRevenue()}")
 
 
+                            println("Do you want to print it?")
+                            condition = YorN("Didn't print...")
+                            if (condition) println("Printed...")
 
+                            println("Please press Enter to back")
+                            readln()
+
+
+
+                        }
                     }
+
                 }
 
             }
@@ -964,9 +1001,9 @@ fun main(args: Array<String>) {
 
 
 
-        println("\nPROCESS ENDED\n")
+        println("\nSign Out!!!\n")
     }
-
+    println("\nPROCESS ENDED\n")
 }
 
 fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Courier>): ArrayList<Courier> {
