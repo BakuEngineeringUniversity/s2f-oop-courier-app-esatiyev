@@ -11,15 +11,20 @@ class PerishablePackage(
     deliveryMethod: DeliveryMethod,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE,
     private var shelfLife: Int = Random.nextInt(10, 365),
-    private var productionDate: LocalDate = LocalDate.now(),
     private var isPerishable: Boolean = true
 ) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step) {
 
-    fun getShelfLife(): Int = shelfLife
+    private var productionDate: LocalDate
+    init {
+        var day = Random.nextInt(1, 40).toLong()
+        this.productionDate = LocalDate.now().minusDays(day)
+    }
 
-    fun getProductionDate(): LocalDate = productionDate
+    fun getShelfLife(): Int = this.shelfLife
 
-    fun getIsPerishable(): Boolean = isPerishable
+    fun getProductionDate(): LocalDate = this.productionDate
+
+    fun getIsPerishable(): Boolean = this.isPerishable
     fun setIsPerishable(isPerishable: Boolean) {
         this.isPerishable = isPerishable
     }

@@ -16,11 +16,6 @@ class OversizedPackage(
     private var height: Int = Random.nextInt(80,500)
 ) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step) {
 
-    fun getPackageLength(): Int = length
-    fun setPackageLength(length: Int) {
-        this.length = length
-    }
-
     fun getWidth(): Int = width
     fun setWidth(width: Int) {
         this.width = width
@@ -31,16 +26,19 @@ class OversizedPackage(
         this.height = height
     }
 
-    fun getVolume(): Int = length * width * height
-
     fun getLength(): Int = length
     fun setLength(length: Int) {
         this.length = length
     }
 
+    fun getVolume(): Double {
+        val volume: Double = length * width * height * 0.000001
+        return String.format("%.2f", volume).toDouble()
+    }
+
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
-        println("Package delivered on ${LocalDate.now().toString()}")
+        println("Package delivered on ${LocalDate.now()}")
     }
 }

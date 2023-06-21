@@ -18,6 +18,6 @@ class HazardousPackage(
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
-        println("Package delivered on ${LocalDate.now().toString()}")
+        println("Package delivered on ${LocalDate.now()}")
     }
 }

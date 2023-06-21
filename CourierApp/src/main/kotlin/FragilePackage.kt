@@ -8,7 +8,7 @@ class FragilePackage(
     weight: Float,
     price: Float,
     deliveryMethod: DeliveryMethod,
-    isFragile: Boolean,
+    isFragile: Boolean = true,
     step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : Package(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, step) {
     protected var isFragile = isFragile
@@ -19,6 +19,6 @@ class FragilePackage(
 
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
-        println("Package delivered on ${LocalDate.now().toString()}")
+        println("Package delivered on ${LocalDate.now()}")
     }
 }

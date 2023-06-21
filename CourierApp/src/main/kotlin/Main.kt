@@ -198,10 +198,7 @@ fun main(args: Array<String>) {
                                     }
                                     // Fragile Package
                                     3 -> {
-                                        println("Is package fragile?")
-                                        val isFragile: Boolean = YorN("Package isn't fragile!")
-
-                                        USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, isFragile))
+                                        USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
                                         println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
 
                                         createPackage = false
@@ -396,11 +393,12 @@ fun main(args: Array<String>) {
                                     4 -> {
                                         var showPackageInfo = true
                                         while (showPackageInfo) {
-                                            println("1. Show all packages in couriers:")
-                                            println("2. Show a package in couriers")
+                                            println("1. Show my all packages in couriers")
+                                            println("2. Show my package in couriers")
+                                            println("3. Track my package")
                                             println("0. Back")
 
-                                            when(enterNumber(0, 2)) {
+                                            when(enterNumber(0, 3)) {
                                                 // Back
                                                 0 -> showPackageInfo = false
 
@@ -452,7 +450,6 @@ fun main(args: Array<String>) {
 
                                                     if (option == 0) continue // Back
 
-                                                    USER.packages[option-1].getTrackingNumber()
                                                     i = 1
                                                     seconder@for (row in couriers) {
                                                         for (col in row.users)
@@ -475,6 +472,26 @@ fun main(args: Array<String>) {
 
                                                                         println()
                                                                         println("   Delivery Status: " + th.step.name)
+
+
+                                                                        if (th is FragilePackage) {
+                                                                            println("   Is it Fragile: " + th.getIsFragile())
+                                                                        }
+                                                                        else if (th is PerishablePackage) {
+                                                                            println("   Is it Perishable: " + th.getIsPerishable())
+                                                                            println("   Production date: " + th.getProductionDate())
+                                                                            println("   Shelf life: " + th.getShelfLife())
+                                                                        }
+                                                                        else if (th is HazardousPackage) {
+                                                                            println("   Is it allow to deliver? : " + th.getIsAllow())
+                                                                        }
+                                                                        else if (th is OversizedPackage) {
+                                                                            println("   Width: " + th.getWidth() + "cm")
+                                                                            println("   Height: " + th.getHeight() + "cm")
+                                                                            println("   Length: " + th.getLength() + "cm")
+                                                                            println("   Volume: " + th.getVolume() + "m³")
+                                                                        }
+
                                                                         println()
                                                                         break@seconder
                                                                     }
@@ -484,6 +501,33 @@ fun main(args: Array<String>) {
                                                             }
                                                     }
                                                 } // end show a package
+
+                                                // Track my package
+                                                3 -> {
+                                                    var isRight = false
+                                                    var trackingNumber: String
+                                                    print("Enter tracking number: ")
+                                                    trackingNumber = readln()
+
+                                                    for (row in couriers) {
+                                                        for (col in row.users) {
+                                                            if (col.getEmail() == USER.getEmail()) {
+                                                                for (th in col.packages) {
+                                                                    if (th.getTrackingNumber() == trackingNumber) {
+                                                                        th.trackPackage()
+                                                                        isRight = true
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if(isRight == false) {
+                                                        println("Tracking number is invalid!")
+                                                    }
+                                                    println("Please press Enter to Back")
+                                                    readln()
+                                                } // end track my package
+
                                             }
 
                                         }
