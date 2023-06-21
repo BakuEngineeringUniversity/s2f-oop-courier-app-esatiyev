@@ -188,11 +188,13 @@ fun main(args: Array<String>) {
                                         USER.addPackage(RegularPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                         println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
+                                        createPackage = false
                                     }
                                     // Express Package
                                     2 -> {
                                         USER.addPackage(ExpressPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod ))
                                         println("Express Package is added successfully. You can track it with tracking number: $trackingNumber")
+                                        createPackage = false
                                     }
                                     // Fragile Package
                                     3 -> {
@@ -201,24 +203,29 @@ fun main(args: Array<String>) {
 
                                         USER.addPackage(FragilePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod, isFragile))
                                         println("Fragile Package is added successfully. You can track it with tracking number: $trackingNumber")
+
+                                        createPackage = false
                                     }
                                     // Oversized Package
                                     4 -> {
                                         USER.addPackage(OversizedPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                         println("Regular Package is added successfully. You can track it with tracking number: $trackingNumber")
+                                        createPackage = false
                                     }
                                     // Hazardous Package
                                     5 -> {
                                         USER.addPackage(HazardousPackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                         println("Hazardous Package is added successfully. You can track it with tracking number: $trackingNumber")
+                                        createPackage = false
                                     }
                                     // Perishable Package
                                     6 -> {
                                         USER.addPackage(PerishablePackage(packageName, trackingNumber, sender, recipient, weight, price, deliveryMethod))
 
                                         println("Perishable Package is added successfully. You can track it with tracking number: $trackingNumber")
+                                        createPackage = false
                                     }
                                     else -> {
                                         println("Invalid package type!!!")  // never should be
