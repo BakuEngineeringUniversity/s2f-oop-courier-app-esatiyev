@@ -316,7 +316,7 @@ fun main(args: Array<String>) {
                                                 if (col.getName() == USER.getName()) {
                                                     for (th in col.packages){
                                                         if (th.getTrackingNumber() == USER.packages[option -1].getTrackingNumber()) {
-                                                            println("burda")
+
                                                             if (th.getStepp().value == 1) {
                                                                 row.removePackage(th, USER)
                                                                 println("Package is removed successfully.")
@@ -327,15 +327,15 @@ fun main(args: Array<String>) {
                                                             }
 
                                                             breakExistPackage = false
-                                                            println("burda 2")
+
                                                             break@secondfor
                                                         }
                                                         println("s " + th.getStepp().value)
                                                     }
                                                 }
-                                                println("aye")
+
                                             }
-                                            println("uyddaa")
+
                                         }
 
                                         if (breakExistPackage) {
