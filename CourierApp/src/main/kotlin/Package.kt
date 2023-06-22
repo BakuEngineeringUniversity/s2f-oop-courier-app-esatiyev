@@ -2,23 +2,23 @@ import java.time.LocalDate
 import kotlin.random.Random
 
 abstract class Package(
-    paackageName: String,
+    packageName: String,
     trackingNumber: String,
     sender: String,
     recipient: String,
     weight: Float,
     price: Float,
-    var deliveryMethod: DeliveryMethod,
-    var step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
+    protected var deliveryMethod: DeliveryMethod,
+    protected var step: DeliveryStatus = DeliveryStatus.IN_OVERSEAS_WAREHOUSE
 ) : PackageDelivery  {
 
     protected var rate: Int = 0
+    protected var deliveryTime: String = "0"
     fun getRating(): Int = rate
+
     fun setRating(value: Int) {
         rate = value
     }
-
-    protected var deliveryTime: String = "0"
     fun getDeliveryTimeFormatted(): String = deliveryTime
     fun setDeliveryTimeFormatted(value: String) {
         deliveryTime = value
@@ -37,16 +37,17 @@ abstract class Package(
                 s += i
             }
 
-            if (i != deliveryTime[deliveryTime.length - 1])
+         /*   if (i != deliveryTime[deliveryTime.length - 1])
             if(!(i+1).isDigit()) {
                 days = s.toLong()
-            }
+            }*/
         }
+        days = s.toLong()
         return LocalDate.now().plusDays(days).toString()
     }
 
 
-    private var packageName: String? = paackageName
+    private var packageName: String? = packageName
     fun getPackageName() = packageName
     fun setPackageName(value: String) {
         packageName = value
@@ -82,6 +83,11 @@ abstract class Package(
     fun setPrice(value: Float) {
         price = if(value <= 0) 0f
         else value
+    }
+
+    fun getStepp(): DeliveryStatus = step
+    fun setStepp(value: DeliveryStatus) {
+        step = value
     }
 
     fun updatePackageStep(value: Int){

@@ -115,7 +115,7 @@ fun main(args: Array<String>) {
                         for (col in row.users) {
                             if (col.getEmail() == USER.getEmail()) {
                                 for (th in col.packages) {
-                                    if(th.step.name == "DELIVERED" && th.getRating() == 0) {
+                                    if(th.getStepp().name == "DELIVERED" && th.getRating() == 0) {
                                         couriers = rateDelivery(th.getTrackingNumber(), USER.getEmail(), couriers)
                                         for (i in USER.packages) {
                                             if(i.getTrackingNumber() == th.getTrackingNumber()) {
@@ -251,10 +251,7 @@ fun main(args: Array<String>) {
                                     println("$i. Package: ${row.getPackageName()} ")
                                     println("    Sender: ${row.getSender()}")
                                     println("    Tracking number: ${row.getTrackingNumber()}")
-                                    //   println("   Price: ${row.getPrice()}")
-                                    //   println("   Weight: ${col.getWeight()}")
-                                    //   println("   Delivery cost: ${ row.calculateDeliveryCost("${col.getTrackingNumber()}") }")
-                                    //   println("   Courier: ${row.getCourierName()}")
+
                                     println()
                                     i++
                                 }
@@ -274,7 +271,7 @@ fun main(args: Array<String>) {
                                         secondfor@for (row in couriers) {
                                             for (col in row.packages) {
                                                 if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
-                                                    println("This package is already added to ${row.getCourierName()} cargo." +
+                                                    println("This package is already added to ${row.getName()} cargo." +
                                                             "by ${col.getRecipient()}")
                                                     breakExistPackage = true
                                                     break@secondfor
@@ -286,7 +283,7 @@ fun main(args: Array<String>) {
 
                                         i = 1
                                         for (row in couriers) {
-                                            println("$i. ${row.getCourierName()}, price per kg: ${row.getPricePerKg()}")
+                                            println("$i. ${row.getName()}, price per kg: ${row.getPricePerKg()}")
                                             i++
                                         }
                                         println("0. Back\n")
@@ -297,7 +294,7 @@ fun main(args: Array<String>) {
                                         //     println("Delivery time: " + USER.packages[option-1].getDeliveryTimeFormatted() )
 
                                         couriers[courierNumber - 1].addPackage(USER.packages[option - 1], USER)
-                                        println("Package is added to ${couriers[courierNumber - 1].getCourierName()} courier company.")
+                                        println("Package is added to ${couriers[courierNumber - 1].getName()} courier company.")
                                     }
 
                                     // Remove the package from current courier
@@ -311,29 +308,42 @@ fun main(args: Array<String>) {
 
                                         // check that this package is already added to any courier or not, if not then "continue"
                                         var breakExistPackage: Boolean = true
-
+                                        var removed = false
                                         //         if (couriers.isNotEmpty())
                                         secondfor@for (row in couriers) {
                                             //  if (row.packages.isEmpty()) continue
                                             for (col in row.users) {
-                                                if (col == USER)
+                                                if (col.getName() == USER.getName()) {
                                                     for (th in col.packages){
                                                         if (th.getTrackingNumber() == USER.packages[option -1].getTrackingNumber()) {
-                                                            row.removePackage(th, USER)
-                                                            println("Package is removed successfully.")
+                                                            println("burda")
+                                                            if (th.getStepp().value == 1) {
+                                                                row.removePackage(th, USER)
+                                                                println("Package is removed successfully.")
+                                                                removed = true
+                                                            }
+                                                            else {
+                                                                println(th.getStepp().status + " So it cannot be removed!")
+                                                            }
+
                                                             breakExistPackage = false
+                                                            println("burda 2")
                                                             break@secondfor
                                                         }
-
+                                                        println("s " + th.getStepp().value)
                                                     }
-
+                                                }
+                                                println("aye")
                                             }
+                                            println("uyddaa")
                                         }
 
                                         if (breakExistPackage) {
                                             println("This package isn't added to any courier!")
                                             continue
                                         }
+
+                                        if (removed == false) continue
 
                                         println("Provide feedback. Why did you remove it from this cargo?")
                                         println("1: I saw more cheap courier than this  cargo.")
@@ -370,7 +380,7 @@ fun main(args: Array<String>) {
 //                                        if (row.packages.isNotEmpty())
                                             for (col in row.packages) {
                                                 if (col.getTrackingNumber() == USER.packages[option - 1].getTrackingNumber()) {
-                                                    println("This package was added to ${row.getCourierName()} cargo" +
+                                                    println("This package was added to ${row.getName()} cargo" +
                                                             "it cannot be deleted")
                                                     isExistPackage = true
                                                     break@secondfor
@@ -415,10 +425,10 @@ fun main(args: Array<String>) {
                                                                     println("   Price: ${th.getPrice()}")
                                                                     println("   Weight: ${th.getWeight()}")
                                                                     println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                                                    println("   Courier: ${row.getCourierName()}")
+                                                                    println("   Courier: ${row.getName()}")
                                                                     println("   Tracking number: ${th.getTrackingNumber()}")
 
-                                                                    if (th.step.name == "DELIVERED")
+                                                                    if (th.getStepp().name == "DELIVERED")
                                                                         println("   Delivery Time: ${th.getDeliveryTimeFormatted()}")
                                                                     else
                                                                         println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
@@ -462,17 +472,15 @@ fun main(args: Array<String>) {
                                                                         println("   Price: ${th.getPrice()}")
                                                                         println("   Weight: ${th.getWeight()}")
                                                                         println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber())}")
-                                                                        println("   Courier: ${row.getCourierName()}")
+                                                                        println("   Courier: ${row.getName()}")
                                                                         println("   Tracking number: ${th.getTrackingNumber()}")
 
-                                                                        if (th.step.name == "DELIVERED")
+                                                                        if (th.getStepp().name == "DELIVERED")
                                                                             println("   Delivery Time: ${th.getDeliveryTimeFormatted()}")
                                                                         else
                                                                             println("   Estimated Delivery Time: ${th.getEstimatedDeliveryTime()}")
-
                                                                         println()
-                                                                        println("   Delivery Status: " + th.step.name)
-
+                                                                        println("   Delivery Status: " + th.getStepp().name)
 
                                                                         if (th is FragilePackage) {
                                                                             println("   Is it Fragile: " + th.getIsFragile())
@@ -549,7 +557,7 @@ fun main(args: Array<String>) {
                                 println("E-mail: " + USER.getEmail())
                                 println("Phone: " + USER.getPhone())  // changeable
                                 println("Gender: " + USER.getGender())
-                                println("Address: " + USER.getAddress()) // changeable
+                                println("Address: " + USER.getAddressName()) // changeable
                                 println("Personal No: " + USER.getPersonalNo())
 
                                 println("1. Change the password")
@@ -574,7 +582,7 @@ fun main(args: Array<String>) {
 
                                     // Change the address
                                     3 -> {
-                                        users[uNumber].setAddress(readln())
+                                        users[uNumber].setAddressName(readln())
                                         USER = users[uNumber]
                                         println("The address is changed successfully...")
                                     }
@@ -591,7 +599,7 @@ fun main(args: Array<String>) {
                             else {
                                 var i = 1
                                 for (row in couriers) {
-                                    println("$i. ${row.getCourierName()}:")
+                                    println("$i. ${row.getName()}:")
                                     println("    Price per Kg: ${row.getPricePerKg()}")
                                     i++
                                 }
@@ -630,13 +638,29 @@ fun main(args: Array<String>) {
 
                             // check that this courier with this name has already exist or not
                             for(row: Courier in couriers){
-                                if(row.getCourierName() == courierName){
+                                if(row.getName() == courierName){
                                     println("This courier has already exist!!!")
                                     breakSubjectRequest = true
                                     //conti@subjectrequest
                                 }
                             }
                             if(breakSubjectRequest) continue
+
+
+                            val phone: String
+                            println("Enter phone number (+994XXXXXXXXX: ")
+                            print("+994")
+                            phone = readln()
+
+                            print("E-mail: ")
+                            val email: String = readln()
+
+                            print("Address: ")
+                            val address: String = readln()
+
+                            print("Password: ")
+                            val password: String = readln()
+
 
                             println("Enter delivery price per kg: ")
                             var pricePerKg: Float
@@ -645,9 +669,7 @@ fun main(args: Array<String>) {
                                 if (pricePerKg <= 0f) println("Delivery price must be more than 0!!! Please enter valid price: ")
                             } while(pricePerKg <= 0f)
 
-                            print("Enter password: ")
-                            val password: String = readln()
-                            couriers.add(Courier(courierName, pricePerKg, password))
+                            couriers.add(Courier(courierName, phone, email, address, password, pricePerKg))
                             println("Courier is added successfully. You can add package to this courier. Courier name: $courierName")
 
                             for (row in users) {
@@ -658,29 +680,36 @@ fun main(args: Array<String>) {
                         // Delete the courier permanently
                         2 -> {
 
-                            var i = 0
+                            var i = 1
                             for (row in couriers) {
+                                println("$i. ${row.getName()}")
                                 i++
-                                println("$i. ${row.getCourierName()}")
                             }
                             println("0. Back")
 
-                            option = enterNumber(0, couriers.size, "Which one do you want to delete? Enter a number: ")
+                            option = enterNumber(0, i-1, "Which one do you want to delete? Enter a number: ")
 
                             if(option == 0) continue // Back
 
+                            var d: Int = 0
                             if (couriers[option - 1].packages.size != 0 ) {
-                                if (couriers[option - 1].packages.size == 1)
-                                    println("The courier you want to delete has a package so it cannot be deleted.\n" +
-                                            "Firstly, this courier has to deliver this package!")
-                                else
-                                    println("The courier you want to delete has packages so it cannot be deleted.\n" +
+                                for (row in couriers[option - 1].packages) {
+                                    if (row.getStepp().name == "DELIVERED") d++
+                                }
+                                if (couriers[option - 1].packages.size == d){
+                                    println("${couriers[option - 1].getName()} courier is deleted successfully.")
+                                    couriers.remove(couriers[option-1])
+                                }
+                                else {
+                                    println("The courier you want to delete has packages to deliver so it cannot be deleted.\n" +
                                             "Firstly, this courier has to deliver these packages!")
-                                continue
+                                }
+                            }
+                            else {
+                                println("${couriers[option - 1].getName()} courier is deleted successfully.")
+                                couriers.remove(couriers[option-1])
                             }
 
-                            println("${couriers[option - 1].getCourierName()} courier is deleted successfully.")
-                            couriers.removeAt(option - 1)
                         }
 
                         // Get total revenue of a courier
@@ -699,7 +728,7 @@ fun main(args: Array<String>) {
                                     // Show revenues of all couriers
                                     1 -> {
                                         for (row in couriers) {
-                                            println("Courier: ${row.getCourierName()} -> Revenue: ${row.getTotalRevenue()}")
+                                            println("Courier: ${row.getName()} -> Revenue: ${row.getTotalRevenue()}")
                                         }
 
                                         println("Do you want to print it?")
@@ -715,7 +744,7 @@ fun main(args: Array<String>) {
                                         var i = 1
 
                                         for (row in couriers) {
-                                            println("$i. " + row.getCourierName())
+                                            println("$i. " + row.getName())
                                             i++
                                         }
                                         println("0. Back")
@@ -729,7 +758,7 @@ fun main(args: Array<String>) {
                                         i = 1
                                         for (row in couriers) {
                                             if (option == i) {
-                                                println("Courier: ${row.getCourierName()} ->" +
+                                                println("Courier: ${row.getName()} ->" +
                                                         " Revenue: ${row.getTotalRevenue()}")
 
                                                 println()
@@ -778,7 +807,7 @@ fun main(args: Array<String>) {
                                                     println("   Price: ${th.getPrice()}")
                                                     println("   Weight: ${th.getWeight()}")
                                                     println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                                    println("   Courier: ${row.getCourierName()}")
+                                                    println("   Courier: ${row.getName()}")
                                                     println("   Tracking number: ${th.getTrackingNumber()}")
                                                     println()
                                                 }
@@ -819,7 +848,7 @@ fun main(args: Array<String>) {
                                                         println("   Price: ${th.getPrice()}")
                                                         println("   Weight: ${th.getWeight()}")
                                                         println("   Delivery cost: ${ row.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                                        println("   Courier: ${row.getCourierName()}")
+                                                        println("   Courier: ${row.getName()}")
                                                         println("   Tracking number: ${th.getTrackingNumber()}")
                                                         println()
                                                         break@seconder
@@ -881,7 +910,7 @@ fun main(args: Array<String>) {
                                                 println("   Price: ${th.getPrice()}")
                                                 println("   Weight: ${th.getWeight()}")
                                                 println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                                println("   Courier: ${COURIER.getCourierName()}")
+                                                println("   Courier: ${COURIER.getName()}")
                                                 println("   Tracking number: ${th.getTrackingNumber()}")
                                                 println()
                                             }
@@ -920,7 +949,7 @@ fun main(args: Array<String>) {
                                                     println("   Price: ${th.getPrice()}")
                                                     println("   Weight: ${th.getWeight()}")
                                                     println("   Delivery cost: ${ COURIER.calculateDeliveryCost(th.getTrackingNumber()) }")
-                                                    println("   Courier: ${COURIER.getCourierName()}")
+                                                    println("   Courier: ${COURIER.getName()}")
                                                     println("   Tracking number: ${th.getTrackingNumber()}")
                                                     println()
                                                     break@seconder
@@ -971,26 +1000,25 @@ fun main(args: Array<String>) {
                                             if(packageOption == i) {
                                                 // check that previous step is DELIVERED or not
                                                 condition = true
-                                                if (col.step.name == "DELIVERED") condition = false
-                                                //
-
-                                                val step = col.step.ordinal
-                                                col.updatePackageStep(step + 1)
-
-                                                println("Package step is updated.")
-                                                println("Current step: ${col.step.name}")
-
-                                                // update delivery time
-                                                if (col.step.name == "DELIVERED" && condition) {
-                                                    col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                                if (col.getStepp().name == "DELIVERED") {
+                                                    condition = false
                                                 }
                                                 //
+                                                else {
+                                                    println("Package step is updated.")
+                                                }
+                                                val step = col.getStepp().ordinal
+                                                col.updatePackageStep(step + 1)
+                                                println("Current step: ${col.getStepp().name}")
 
+                                                // update delivery time
+                                                if (col.getStepp().name == "DELIVERED" && condition) {
+                                                    col.setDeliveryTimeFormatted(LocalDate.now().toString())
+                                                }
                                                 break
                                             }
                                             i++
                                         }
-
                                     } // Update Package Step
 
                                     // Deliver Package
@@ -1000,19 +1028,18 @@ fun main(args: Array<String>) {
                                         for(col in COURIER.packages) {
                                             if(packageOption == i) {
                                                 // check that previous step is DELIVERED or not
-                                                condition = true
-                                                if (col.step.name == "DELIVERED") condition = false
+                                                if (col.getStepp().name == "DELIVERED") {
+                                                    println("This package is already delivered!")
+                                                }
                                                 //
 
-                                                col.deliverPackage()
-                                                println("Package is delivered.")
-                                                println("Current step: ${col.step.name}")
-
-                                                // update delivery time
-                                                if (condition)
+                                                else {
+                                                    col.deliverPackage()
+                                                    println("Package is delivered.")
+                                                    println("Current step: ${col.getStepp().name}")
+                                                    // update delivery time
                                                     col.setDeliveryTimeFormatted(LocalDate.now().toString())
-                                                //
-
+                                                }
                                                 break
                                             }
                                             i++
@@ -1029,7 +1056,7 @@ fun main(args: Array<String>) {
                         // Get Total Revenue
                         3 -> {
 
-                            println("Courier: ${COURIER.getCourierName()} ->" +
+                            println("Courier: ${COURIER.getName()} ->" +
                                     " Revenue: ${COURIER.getTotalRevenue()}")
 
 
@@ -1054,7 +1081,7 @@ fun main(args: Array<String>) {
 
         println("\nSign Out!!!\n")
     }
-    println("\nPROCESS ENDED\n")
+//    println("\nPROCESS ENDED\n")
 }
 
 fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Courier>): ArrayList<Courier> {
@@ -1080,7 +1107,6 @@ fun rateDelivery(trackingNumber: String, email: String, couriers: ArrayList<Cour
                 }
             }
         }
-
         // couriers.packages rate
         for (col in row.packages) {
             if(col.getTrackingNumber() == trackingNumber) {
@@ -1148,8 +1174,8 @@ fun loginCourier(list: ArrayList<Courier>): Pair<Int, Boolean> {
         var auth = false
 
         for((i, row) in list.withIndex()) {
-            if (loggedName == row.getCourierName() && loggedPassword == row.getPassword()) {
-                println("Hi,${row.getCourierName()}.You are already login in.")
+            if (loggedName == row.getName() && loggedPassword == row.getPassword()) {
+                println("Hi,${row.getName()}.You are already login.")
                 cNumber = i  // USERin users listinde hansi oldugunu teyin etmek ucundur
                 auth = true
                 condition = true
@@ -1181,7 +1207,7 @@ fun loginUser(list: ArrayList<User>): Pair<Int, Boolean> {
 
         for((i, row) in list.withIndex()) {
             if (loggedName == row.getEmail() && loggedPassword == row.getPassword()) {
-                println("Hi,${row.getName()}.You are already login in.")
+                println("Hi,${row.getName()}.You are already login.")
                 uNumber = i  // USERin users listinde hansi oldugunu teyin etmek ucundur
                 auth = true
                 condition = true

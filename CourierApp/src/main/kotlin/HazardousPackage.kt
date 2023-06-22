@@ -15,7 +15,6 @@ class HazardousPackage(
         this.isAllow = isAllow
     }
 
-
     override fun deliverPackage() {
         step = DeliveryStatus.DELIVERED
         println("Package delivered on ${LocalDate.now()}")

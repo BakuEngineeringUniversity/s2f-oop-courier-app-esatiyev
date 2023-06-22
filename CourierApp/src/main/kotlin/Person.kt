@@ -1,24 +1,28 @@
 abstract class Person(
     private var name: String,
-    private var surname: String,
-    private var age: Int,
-    private var gender: String,
     private var phone: String,
     private var email: String,
-    private var address: String
+    private var password: String,
+    protected var address: String
 ) {
     fun getName(): String = name
-    fun getSurname(): String = surname
-    fun getAge(): Int = age
-    fun getGender(): String = gender
+//    fun setName(value: String) {
+//        name = value
+//    }
+
     fun getPhone(): String = phone
     fun setPhone(phone: String) {
         this.phone = phone
     }
     fun getEmail(): String = email
 
-    fun getAddress(): String = address
-    fun setAddress(address: String) {
+    fun getPassword(): String = password
+    fun setPassword(password: String) {
+        this.password = password
+    }
+
+    fun getAddressName(): String = address
+    fun setAddressName(address: String) {
         this.address = address
     }
 }
